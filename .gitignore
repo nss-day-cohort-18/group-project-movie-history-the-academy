@@ -1,0 +1,5 @@
+lib/.sass-cache
+.DS_Store
+dist/
+css/
+lib/node_modules
