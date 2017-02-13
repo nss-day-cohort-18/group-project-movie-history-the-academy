@@ -7,49 +7,50 @@ let $ = require('jquery'),
 // DB interaction using Firebase REST API
 // ****************************************
 //get user
-function getSongs(user) {
+
+function getMovies(user) {//this function grabs all the movies that belong to the user name, this is done by the orderBy = etc
 // callout to external data base
 //promise
 return new Promise(function(resolve,reject){
   $.ajax({
     url:`"https://music-history-boiler-plate.firebaseio.com/songs.json?orderBy="uid"$equalTo="${user}"`
-  }).done(function(songData){
-    resolve(songData);
+  }).done(function(movieData){
+    resolve(movieData);
   });
 });
 }
-function addSong(songFormObj) {
-  console.log("addSong", songFormObj);
+function addMovie(movieFormObj) {//this function adds a movie selection back onto the movie.json that is on the firebase database
+  console.log("addMovie", movieFormObj);
   return new Promise(function(resolve, reject){
     $.ajax({
       url:"https://music-history-boiler-plate.firebaseio.com/songs.json",
       type:'POST',
-      data: JSON.stringify(songFormObj),
+      data: JSON.stringify(movieFormObj),
       dataType: 'json'
-    }).done(function(songID){
-      resolve(songID);
+    }).done(function(movieID){
+      resolve(movieID);
     }).fail(function(error){
       reject(error);
     });
   });
 }
 // POST - Submits data to be processed to a specified resource. Takes one parameter.
-function deleteSong(songId) {
+function deleteMovie(movieID) {
     return new Promise(function(resolve, reject) {
         $.ajax({
-            url: `https://music-history-fb486.firebaseio.com/songs/${songId}.json`,
+            url: `https://music-history-fb486.firebaseio.com/songs/${movieID}.json`,
             method: "DELETE",
         }).done(()=>{
             resolve();
         });
     });
 }
-function getSong(songId) {
+function getMovie(movieID) {
   return new Promise(function(resolve, reject){
     $.ajax({
-      url: `https://music-history-fb486.firebaseio.com/songs/${songId}.json`,
-    }).done(function(songData){
-      resolve(songData);
+      url: `https://music-history-fb486.firebaseio.com/songs/${movieID}.json`,
+    }).done(function(movieData){
+      resolve(movieData);
     }).fail(function(error){
       reject(error);
     });
@@ -57,21 +58,10 @@ function getSong(songId) {
 }
 // GET - Requests/read data from a specified resource
 // PUT - Update data to a specified resource. Takes two parameters.
-function editSong(songFormObj, songId) {
-return new Promise(function(resolve, reject){
-  $.ajax({
-    url: `https://music-history-fb486.firebaseio.com/songs/${songId}.json`,
-    type: 'PUT',
-    data: JSON.stringify(songFormObj)
-   }).done(function(data){
-    resolve(data);
-   });
- });
-}
+
 module.exports = {
-  getSongs,
-  addSong,
-  getSong,
-  deleteSong,
-  editSong
+  getMovies,
+  addMovie,
+  getMovie,
+  deleteMovie,
 };
