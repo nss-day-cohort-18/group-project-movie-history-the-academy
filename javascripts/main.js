@@ -5,65 +5,65 @@ let $ = require('jquery'),
     user = require("./user");
 user.logOut();
 // Using the REST API
-function loadSongsToDOM() {
-  console.log("Need to load some songs, Buddy");
+function loadMoviesToDOM() {
+  console.log("Where the movies at??");
   //find get user function
-  let currentUser = user.getUser();
-  db.getSongs(currentUser)
-  .then((songData)=>{
-    console.log("got data", songData);
-    var idArray = Object.keys(songData);
+  let currentUser = user.getUser();//setting the currentUser info to a variable of the same name
+  db.getMovies(currentUser)//running the user info through the getMovies function, gets all movies out of firebase that are tied to this user's uid
+  .then((movieData)=>{//movieData comes from the getMovies function, by the resolution of the Promise
+    console.log("got data", movieData);
+    var idArray = Object.keys(movieData);//putting all the keys (in this case, movie names) from the movie list on firebase
     idArray.forEach(function(key){
-      songData[key].id = key;
+      movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
     });
-    console.log("song object with id", songData);
-    templates.makeSongList(songData);
+    console.log("movie object with id", movieData);
+    templates.makeSongList(movieData);//this is a function on the dom-builder file.  Needs revision to work with the movies
   });
 }
-loadSongsToDOM(); //<--Move to auth section after adding login btn
+loadMoviesToDOM(); //<--Move to auth section after adding login btn
 // Send newSong data to db then reload DOM with updated song data
 $(document).on("click", ".save_new_btn", function() {
   console.log("click save new song");
   let songObj = buildSongObj();
   db.addSong(songObj)
   .then(function(songID){
-    loadSongsToDOM(); //<--Move to auth section after adding login btn
+    loadMoviesToDOM(); //<--Move to auth section after adding login btn
   });
 });
 // go get the song from database and then populate the form for editing.
-$(document).on("click", ".edit-btn", function () {
-  console.log("click edit song button");
-  let songID = $(this).data("edit-id");
-  db.getSong(songID)
-  .then(function(song){
-    return templates.songForm(song,songID);
-  })
-  .then(function(finishedForm){
-    $(".uiContainer--wrapper").html(finishedForm);
-  });
-});
-//Save edited song to FB then reload DOM with updated song data
-$(document).on("click", ".save_edit_btn", function() {
-  console.log("click save edit song button");
-  let songObj = buildSongObj(),
-  songID = $(this).attr("id");
-  db.editSong(songObj, songID)
-  .then(function(data){
-    loadSongsToDOM();
-  });
-});
+// $(document).on("click", ".edit-btn", function () {
+//   console.log("click edit song button");
+//   let songID = $(this).data("edit-id");
+//   db.getSong(songID)
+//   .then(function(song){
+//     return templates.songForm(song,songID);
+//   })
+//   .then(function(finishedForm){
+//     $(".uiContainer--wrapper").html(finishedForm);
+//   });
+// });
+// //Save edited song to FB then reload DOM with updated song data
+// $(document).on("click", ".save_edit_btn", function() {
+//   console.log("click save edit song button");
+//   let songObj = buildSongObj(),
+//   songID = $(this).attr("id");
+//   db.editSong(songObj, songID)
+//   .then(function(data){
+//     loadSongsToDOM();
+//   });
+// });
 // Remove song then reload the DOM w/out new song
 $(document).on("click", ".delete-btn", function() {
   console.log("clicked the delete song", $(this).data("delete-id"));
   let songID = $(this).data("delete-id");
   db.deleteSong(songID)
   .then(()=>{
-    loadSongsToDOM();
+    loadMoviesToDOM();
   });
 });
 $("#view-songs").click(function(){
   $(".uiContainer--wrapper").html("");
-  loadSongsToDOM();
+  loadMoviesToDOM();
 });
 $("#auth-btn").click(function(){
   console.log("clicked auth");
@@ -75,7 +75,7 @@ $("#auth-btn").click(function(){
     //vise versa for logout button
     $("#auth-btn").addClass(".is-hidden");
     $("#logout").removeClass(".is-hidden");
-    loadSongsToDOM(); 
+    loadMoviesToDOM(); 
   });
 });
 // Helper functions for forms stuff. Nothing related to Firebase
