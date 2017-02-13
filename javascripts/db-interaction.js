@@ -58,21 +58,10 @@ function getMovie(movieID) {
 }
 // GET - Requests/read data from a specified resource
 // PUT - Update data to a specified resource. Takes two parameters.
-// function editSong(songFormObj, songId) {
-// return new Promise(function(resolve, reject){
-//   $.ajax({
-//     url: `https://music-history-fb486.firebaseio.com/songs/${songId}.json`,
-//     type: 'PUT',
-//     data: JSON.stringify(songFormObj)
-//    }).done(function(data){
-//     resolve(data);
-//    });
-//  });
-// }
+
 module.exports = {
   getMovies,
   addMovie,
   getMovie,
   deleteMovie,
-  // editSong
 };

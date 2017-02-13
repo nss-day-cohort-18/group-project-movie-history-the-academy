@@ -23,40 +23,19 @@ function loadMoviesToDOM() {
 loadMoviesToDOM(); //<--Move to auth section after adding login btn
 // Send newSong data to db then reload DOM with updated song data
 $(document).on("click", ".save_new_btn", function() {
-  console.log("click save new song");
-  let songObj = buildSongObj();
-  db.addSong(songObj)
-  .then(function(songID){
+  console.log("click save new movie");
+  let movieObj = buildMovieObj();
+  db.addMovie(movieObj)
+  .then(function(movieID){
     loadMoviesToDOM(); //<--Move to auth section after adding login btn
   });
 });
-// go get the song from database and then populate the form for editing.
-// $(document).on("click", ".edit-btn", function () {
-//   console.log("click edit song button");
-//   let songID = $(this).data("edit-id");
-//   db.getSong(songID)
-//   .then(function(song){
-//     return templates.songForm(song,songID);
-//   })
-//   .then(function(finishedForm){
-//     $(".uiContainer--wrapper").html(finishedForm);
-//   });
-// });
-// //Save edited song to FB then reload DOM with updated song data
-// $(document).on("click", ".save_edit_btn", function() {
-//   console.log("click save edit song button");
-//   let songObj = buildSongObj(),
-//   songID = $(this).attr("id");
-//   db.editSong(songObj, songID)
-//   .then(function(data){
-//     loadSongsToDOM();
-//   });
-// });
+
 // Remove song then reload the DOM w/out new song
 $(document).on("click", ".delete-btn", function() {
   console.log("clicked the delete song", $(this).data("delete-id"));
-  let songID = $(this).data("delete-id");
-  db.deleteSong(songID)
+  let movieID = $(this).data("delete-id");
+  db.deleteMovie(movieID)
   .then(()=>{
     loadMoviesToDOM();
   });
@@ -80,7 +59,7 @@ $("#auth-btn").click(function(){
 });
 // Helper functions for forms stuff. Nothing related to Firebase
 // Build a song obj from form data.
-function buildSongObj() {
+function buildMovieObj() {//this function needs work, but I don't want to mess with it quite yet
     let songObj = {
     title: $("#form--title").val(),
     artist: $("#form--artist").val(),
