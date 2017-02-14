@@ -6,8 +6,8 @@
 }
 
 /*this is for the logout button so it will be hidden on page load until the user logs in*/
-.is-hidden{
-	display: none;	
+.is-hidden {
+	display: none !important;	
 }
 
 /*Nav Bar Styling*/

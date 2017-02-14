@@ -4,13 +4,21 @@ let firebase = require("./firebaseConfig"),
     provider = new firebase.auth.GoogleAuthProvider(),
     currentUser = null;
 // function for user, if logged in or not
+var logoutBtn = document.getElementById('logout');
+var signInBtn = document.getElementById('auth-btn');
 firebase.auth().onAuthStateChanged(function(user){
   if (user){
-    console.log("currentUser logged in", currentUser);
     currentUser = user.uid;
+    console.log("currentUser logged in", currentUser);
+    logoutBtn.classList.remove('is-hidden');
+    signInBtn.classList.add('is-hidden');
   } else {
     currentUser = null;
     console.log("currentUser not logged in");
+    logoutBtn.classList.add('is-hidden');
+    signInBtn.classList.remove('is-hidden');
+    // $("#auth-btn").removeClass(".is-hidden");
+    // $("#logout").addClass(".is-hidden");
   }
 });
 
