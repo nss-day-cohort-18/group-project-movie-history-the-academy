@@ -2,7 +2,7 @@
 /*Giving everything a border to start so I can see where all my children are*/
 * {
 	border: 1px solid red;
-	background-color: #bada55;
+	/*background-color: #bada55;*/
 }
 
 /*this is for the logout button so it will be hidden on page load until the user logs in*/
