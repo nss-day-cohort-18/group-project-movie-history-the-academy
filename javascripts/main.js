@@ -1,4 +1,5 @@
 "use strict";
+
 let $ = require('jquery'),
     db = require("./db-interaction"),
     templates = require("./dom-builder"),
@@ -40,10 +41,10 @@ $(document).on("click", ".delete-btn", function() {
     loadMoviesToDOM();
   });
 });
-$("#view-songs").click(function(){
-  $(".uiContainer--wrapper").html("");
-  loadMoviesToDOM();
-});
+// $("#view-songs").click(function(){
+//   $(".uiContainer--wrapper").html("");
+//   loadMoviesToDOM();
+// });
 $("#auth-btn").click(function(){
   console.log("clicked auth");
   user.logInGoogle()
@@ -76,3 +77,11 @@ $("#add-movie").click(function() {
     $(".uiContainer--wrapper").html(movieForm);
   });
 });
+
+
+
+
+
+
+
+
