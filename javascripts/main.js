@@ -73,6 +73,6 @@ $("#add-movie").click(function() {
   console.log("clicked add movie");
   var movieForm = templates.movieForm()
   .then(function(songForm) {
-    $(".uiContainer--wrapper").html(songForm);
+    $(".uiContainer--wrapper").html(movieForm);
   });
 });
