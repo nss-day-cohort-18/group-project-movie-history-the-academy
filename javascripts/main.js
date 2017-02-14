@@ -58,6 +58,14 @@ $("#auth-btn").click(function(){
     loadMoviesToDOM(); 
   });
 });
+
+$("#logout").click(function(){
+  console.log("clicked log out");
+  user.logOut();
+  $("#auth-btn").removeClass(".is-hidden");
+  $("#logout").addClass(".is-hidden");
+  loadMoviesToDOM();
+});
 // Helper functions for forms stuff. Nothing related to Firebase
 // Build a movie obj from form data.
 function buildMovieObj() {//this function needs work, but I don't want to mess with it quite yet
