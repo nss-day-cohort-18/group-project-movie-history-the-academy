@@ -1,9 +1,9 @@
 "use strict";
 function getKey() {
-  return {
-    apiKey: "AIzaSyAlnP31FH-RjCCv1aK09oSivUC-Lep8Eb8",
-    authDomain: "music-history-boiler-plate.firebaseapp.com",
-    databaseURL: "https://music-history-boiler-plate.firebaseio.com"
+  return { // MAKE SURE TO NOT PUSH UP API TO GITHUB
+    apiKey: "AIzaSyAyUnXNmHbM9S5PGYamDa8QjCiNh_EfLrM",
+    authDomain: "movie-history-group-proj-dfc09.firebaseapp.com",
+    databaseURL: "https://movie-history-group-proj-dfc09.firebaseio.com"
   };
 }
 module.exports = getKey;

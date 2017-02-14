@@ -1,4 +1,5 @@
 "use strict";
+
 let $ = require('jquery'),
     db = require("./db-interaction"),
     templates = require("./dom-builder"),
@@ -33,17 +34,17 @@ $(document).on("click", ".save_new_btn", function() {
 
 // Remove song then reload the DOM w/out new song
 $(document).on("click", ".delete-btn", function() {
-  console.log("clicked the delete song", $(this).data("delete-id"));
+  console.log("clicked the delete movie", $(this).data("delete-id"));
   let movieID = $(this).data("delete-id");
   db.deleteMovie(movieID)
   .then(()=>{
     loadMoviesToDOM();
   });
 });
-$("#view-songs").click(function(){
-  $(".uiContainer--wrapper").html("");
-  loadMoviesToDOM();
-});
+// $("#view-songs").click(function(){
+//   $(".uiContainer--wrapper").html("");
+//   loadMoviesToDOM();
+// });
 $("#auth-btn").click(function(){
   console.log("clicked auth");
   user.logInGoogle()
@@ -58,21 +59,29 @@ $("#auth-btn").click(function(){
   });
 });
 // Helper functions for forms stuff. Nothing related to Firebase
-// Build a song obj from form data.
+// Build a movie obj from form data.
 function buildMovieObj() {//this function needs work, but I don't want to mess with it quite yet
-    let songObj = {
+    let movieObj = {
     title: $("#form--title").val(),
     artist: $("#form--artist").val(),
     album: $("#form--album").val(),
     year: $("#form--year").val()
   };
-  return songObj;
+  return movieObj;
 }
-// Load the new song form
-$("#add-song").click(function() {
-  console.log("clicked add song");
-  var songForm = templates.songForm()
+// Load the new movie form
+$("#add-movie").click(function() {
+  console.log("clicked add movie");
+  var movieForm = templates.movieForm()
   .then(function(songForm) {
-    $(".uiContainer--wrapper").html(songForm);
+    $(".uiContainer--wrapper").html(movieForm);
   });
 });
+
+
+
+
+
+
+
+

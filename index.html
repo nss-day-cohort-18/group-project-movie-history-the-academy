@@ -7,23 +7,22 @@
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-  <div class="container">
-    <nav class="row box">
-      <div class="nav-wrapper">
-        <ul id="nav-mobile" class="left nav__links">
-          <li><a href="#" title="">View Movies</a></li>
-          <li id="add-movie"><a href="#" title="">Add Movie</a></li>
-          <li id="auth-btn"><a href="#" title="">Sign In</a></li>
+  <!-- HEADER AND NAV BAR -->
+  <nav role="navigation" class="navbar navbar-default">
+    <div class="navbar-header">
+       <div id="navbarCollapse" class="collapse navbar-collapse">
+        <form role="search" class="navbar-form navbar-left">
+          <div class="form-group">
+              <input type="text" placeholder="Search OMDb and your tracked movies..." class="form-control" size="80">
+          </div>
+        </form>
+        <ul class="nav navbar-nav">
+            <li id="auth-btn"><a href="#" title="">Sign In</a></li>
           <li id="logout" class="is-hidden"><a href="#" title="">Logout</a></li>
-        </ul>
+        </ul>     
       </div>
-    </nav>
-    <div class="uiContainer row">
-      <section class="uiContainer--wrapper col s9">
-        <!-- <button id="auth-btn" type="button">Sign in with Google</button> -->
-      </section>
     </div>
-  </div>
+  </nav>
   <script type='text/javascript' src='dist/app.js'></script>
 </body>
 </html>

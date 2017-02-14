@@ -1,4 +1,5 @@
 "use strict";
+
 let firebase = require("./firebaseConfig"),
     provider = new firebase.auth.GoogleAuthProvider(),
     currentUser = null;
@@ -12,6 +13,7 @@ firebase.auth().onAuthStateChanged(function(user){
     console.log("currentUser not logged in");
   }
 });
+
 // function for how to sign in
 function logInGoogle() {
 return firebase.auth().signInWithPopup(provider);
