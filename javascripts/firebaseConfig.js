@@ -9,5 +9,5 @@ var config = {
   databaseURL: fbData.databaseURL,
   authDomain: fbData.authDomain
 };
-// firebase.initializeApp(config);
+firebase.initializeApp(config);
 module.exports = firebase;
