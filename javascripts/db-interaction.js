@@ -13,7 +13,7 @@ function getMovies(user) {//this function grabs all the movies that belong to th
 //promise
 return new Promise(function(resolve,reject){
   $.ajax({
-    url:`"https://music-history-boiler-plate.firebaseio.com/songs.json?orderBy="uid"$equalTo="${user}"`
+    url:`"https://music-history-boiler-plate.firebaseio.com/songs.json?orderBy="uid"$equalTo="${user}"`//need to update this url with the correct firebase for this project
   }).done(function(movieData){
     resolve(movieData);
   });
@@ -23,7 +23,7 @@ function addMovie(movieFormObj) {//this function adds a movie selection back ont
   console.log("addMovie", movieFormObj);
   return new Promise(function(resolve, reject){
     $.ajax({
-      url:"https://music-history-boiler-plate.firebaseio.com/songs.json",
+      url:"https://music-history-boiler-plate.firebaseio.com/songs.json",//need to update this url with the correct firebase for this project
       type:'POST',
       data: JSON.stringify(movieFormObj),
       dataType: 'json'
@@ -38,7 +38,7 @@ function addMovie(movieFormObj) {//this function adds a movie selection back ont
 function deleteMovie(movieID) {
     return new Promise(function(resolve, reject) {
         $.ajax({
-            url: `https://music-history-fb486.firebaseio.com/songs/${movieID}.json`,
+            url: `https://music-history-fb486.firebaseio.com/songs/${movieID}.json`,//need to update this url with the correct firebase for this project
             method: "DELETE",
         }).done(()=>{
             resolve();
@@ -48,7 +48,7 @@ function deleteMovie(movieID) {
 function getMovie(movieID) {
   return new Promise(function(resolve, reject){
     $.ajax({
-      url: `https://music-history-fb486.firebaseio.com/songs/${movieID}.json`,
+      url: `https://music-history-fb486.firebaseio.com/songs/${movieID}.json`,//need to update this url with the correct firebase for this project
     }).done(function(movieData){
       resolve(movieData);
     }).fail(function(error){
