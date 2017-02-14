@@ -17,8 +17,6 @@ firebase.auth().onAuthStateChanged(function(user){
     console.log("currentUser not logged in");
     logoutBtn.classList.add('is-hidden');
     signInBtn.classList.remove('is-hidden');
-    // $("#auth-btn").removeClass(".is-hidden");
-    // $("#logout").addClass(".is-hidden");
   }
 });
 

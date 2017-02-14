@@ -51,10 +51,6 @@ $("#auth-btn").click(function(){
   .then(function(results){
     console.log("result from login", results.user.uid);
     user.setUser(results.user.uid);
-    // if login button is shows, the logout is hidden
-    //vise versa for logout button
-    $("#auth-btn").addClass(".is-hidden");
-    $("#logout").removeClass(".is-hidden");
     loadMoviesToDOM(); 
   });
 });
@@ -62,10 +58,10 @@ $("#auth-btn").click(function(){
 $("#logout").click(function(){
   console.log("clicked log out");
   user.logOut();
-  $("#auth-btn").removeClass(".is-hidden");
-  $("#logout").addClass(".is-hidden");
   loadMoviesToDOM();
 });
+
+
 // Helper functions for forms stuff. Nothing related to Firebase
 // Build a movie obj from form data.
 function buildMovieObj() {//this function needs work, but I don't want to mess with it quite yet
