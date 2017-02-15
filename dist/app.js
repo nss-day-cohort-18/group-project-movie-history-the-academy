@@ -166,6 +166,8 @@ $("#auth-btn").click(function(){
     console.log("result from login", results.user.uid);
     user.setUser(results.user.uid);
     $(".select-button").show();
+    $("#current-list-visible").html("My Movies");
+
   });
 });
 
@@ -247,13 +249,9 @@ firebase.auth().onAuthStateChanged(function(user){
   if (user){
     currentUser = user.uid;
     console.log("currentUser logged in", currentUser);
-    logoutBtn.classList.remove('is-hidden');
-    signInBtn.classList.add('is-hidden');
   } else {
     currentUser = null;
     console.log("currentUser not logged in!");
-    logoutBtn.classList.add('is-hidden');
-    signInBtn.classList.remove('is-hidden');
   }
 });
 

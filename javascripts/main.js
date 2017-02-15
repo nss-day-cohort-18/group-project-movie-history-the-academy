@@ -38,6 +38,8 @@ $("#auth-btn").click(function(){
     console.log("result from login", results.user.uid);
     user.setUser(results.user.uid);
     $(".select-button").show();
+    $("#current-list-visible").html("My Movies");
+
   });
 });
 
