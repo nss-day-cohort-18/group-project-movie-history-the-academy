@@ -11,7 +11,6 @@ let $ = require('jquery'),
 function getMovies(searchResult) {//this function grabs all the movies that belong to the user name, this is done by the orderBy = etc
 // callout to external data base
 //promise
-console.log("this is something");
 console.log("searchResult", searchResult);
 return new Promise(function(resolve,reject){
   $.ajax({

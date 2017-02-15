@@ -2,7 +2,7 @@
 
 let $ = require('jquery'),
     db = require("./db-interaction"),
-    templates = require("./dom-builder"),
+    templates = require("./dom-movie-builder"),
     user = require("./user");
 user.logOut();
 // Using the REST API
@@ -55,14 +55,13 @@ $("#auth-btn").click(function(){
   .then(function(results){
     console.log("result from login", results.user.uid);
     user.setUser(results.user.uid);
-    loadMoviesToDOM(); 
   });
 });
 
 $("#logout").click(function(){
   console.log("clicked log out");
   user.logOut();
-  loadMoviesToDOM();
+  // loadMoviesToDOM();
 });
 
 
