@@ -12,7 +12,7 @@
        <div id="navbarCollapse" class="collapse navbar-collapse">
         <form role="search" class="navbar-form navbar-left">
           <div class="form-group">
-              <input type="text" placeholder="Search OMDb and your tracked movies..." class="form-control" size="80">
+              <input type="text" id="searchbar" placeholder="Search OMDb and your tracked movies..." class="form-control" size="80">
           </div>
         </form>
         <ul class="nav navbar-nav">
@@ -22,6 +22,27 @@
       </div>
     </div>
   </nav>
+
+  <div id="movie-container"></div>
+    
+  <script id="movie-cards" type="text/x-handlebars-template">
+      {{#each results}}
+        <div id="photo-div">
+          <img src="{{poster_path}}">
+        </div>
+
+        <div id="info-div">
+          <h3>{{title}}</h3>
+          <span>{{vote_average}}</span>
+          <p>{{overview}}</p>
+        </div>
+      {{/each}}
+  </script>
+
+
+
+  <!-- <script src="templates/card-grid.hbs"></script> -->
+  <!-- <script src="lib/node_modules/handlebars/dist/handlebars.js"></script> -->
   <script type='text/javascript' src='dist/app.js'></script>
 </body>
 </html>

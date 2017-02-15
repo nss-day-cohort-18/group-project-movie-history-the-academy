@@ -14,7 +14,8 @@ firebase.auth().onAuthStateChanged(function(user){
     signInBtn.classList.add('is-hidden');
   } else {
     currentUser = null;
-    console.log("currentUser not logged in");
+    console.log("currentUser not logged in!");
+    alert("sign in to search movies");
     logoutBtn.classList.add('is-hidden');
     signInBtn.classList.remove('is-hidden');
   }

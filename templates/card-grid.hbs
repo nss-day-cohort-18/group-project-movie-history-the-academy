@@ -1,12 +1,10 @@
 {{#each ccakes}}
- <section id="card--{{@index}}" class="card-wrapper" style="border: 2px solid {{color}}">
-  <h3>#{{increment @index}} Cake </h3>
-  <h4>{{flavor}} {{kind}}</h4>
-  <div class="cake-price">${{price}}</div>
-  <div class="card-img" style="background-image: url('images/{{image}}')"></div>
-  {{#if purchased}}
-    <span class="cake-sold">SOLD OUT!</span>
-  {{/if}}
+ <section id="card--{{@index}}" class="card-wrapper" style="border: 2px solid black">
+  <div class="movie-poster">{{poster_path}}</div>
+  <h3>{{title}}</h3>
+  <h4>{{vote_average}}</h4>
+  <p>{{overview}}</p>
+
   <p class="card-copy"> {{description}}</p>
  </section>
 {{/each}}
