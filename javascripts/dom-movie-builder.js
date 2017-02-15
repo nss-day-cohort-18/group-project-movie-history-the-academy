@@ -20,3 +20,7 @@ function createHTML(searchResult) {
 	movieContainer.innerHTML = newGeneratedHTML;
 
 }
+
+
+//probably need to use the first part of the below link for grabbing the poster from the api
+//https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg

@@ -11,13 +11,13 @@ function loadMoviesToDOM(searchResult) {
   db.getMovies(searchResult)
   .then((movieData)=>{//movieData comes from the getMovies function, by the resolution of the Promise
     console.log("got data", movieData);
-    // var idArray = Object.keys(movieData);//putting all the keys (in this case, movie names) from the movie list on firebase
-    // idArray.forEach(function(key){
-      // movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
+    var idArray = Object.keys(movieData.results);//putting all the keys (in this case, movie names) from the movie list on firebase
+    idArray.forEach(function(key){
+      movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
     });
-    // console.log("movie object with id", movieData);
-    // templates.makeSongList(movieData);//this is a function on the dom-builder file.  Needs revision to work with the movies
-  // });
+    console.log("movie object with id", movieData);
+    templates.createHTML(movieData);//this is a function on the dom-movie-builder file. 
+  });
 }
 // loadMoviesToDOM(); //<--Move to auth section after adding login btn
 function loadUserMovies(argument) {
