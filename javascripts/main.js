@@ -11,44 +11,20 @@ function loadMoviesToDOM(searchResult) {
   db.getMovies(searchResult)
   .then((movieData)=>{//movieData comes from the getMovies function, by the resolution of the Promise
     console.log("got data", movieData);
-    var idArray = Object.keys(movieData.results);//putting all the keys (in this case, movie names) from the movie list on firebase
+    var idArray = Object.keys(movieData);//putting all the keys (in this case, movie names) from the movie list on firebase
     idArray.forEach(function(key){
+      console.log("MovieData[i]: ", movieData[key]);
       movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
     });
     console.log("movie object with id", movieData);
-    templates.createHTML(movieData);//this is a function on the dom-movie-builder file. 
+
+    // NEED TO POPULATE DOM HERE
+
   });
 }
-// loadMoviesToDOM(); //<--Move to auth section after adding login btn
-function loadUserMovies(argument) {
-    let currentUser = user.getUser();//setting the currentUser info to a variable of the same name
-    db.getMovies(currentUser);//running the user info through the getMovies function, gets all movies out of firebase that are tied to this user's uid
-    console.log("currentUser", currentUser);
-}
 
-// Send newSong data to db then reload DOM with updated song data
-$(document).on("click", ".save_new_btn", function() {
-  console.log("click save new movie");
-  let movieObj = buildMovieObj();
-  db.addMovie(movieObj)
-  .then(function(movieID){
-    loadUserMovies(); //<--Move to auth section after adding login btn
-  });
-});
 
-// Remove song then reload the DOM w/out new song
-$(document).on("click", ".delete-btn", function() {
-  console.log("clicked the delete movie", $(this).data("delete-id"));
-  let movieID = $(this).data("delete-id");
-  db.deleteMovie(movieID)
-  .then(()=>{
-    loadMoviesToDOM();
-  });
-});
-// $("#view-songs").click(function(){
-//   $(".uiContainer--wrapper").html("");
-//   loadMoviesToDOM();
-// });
+
 $("#auth-btn").click(function(){
   console.log("clicked auth");
   user.logInGoogle()
@@ -76,18 +52,13 @@ function buildMovieObj() {//this function needs work, but I don't want to mess w
   };
   return movieObj;
 }
-// Load the new movie form
-$("#add-movie").click(function() {
-  console.log("clicked add movie");
-  var movieForm = templates.movieForm()
-  .then(function(songForm) {
-    $(".uiContainer--wrapper").html(movieForm);
-  });
-});
+
+
+
 
 //this is the beginning of the function to run a api search on the enter key
-var something = document.getElementById('searchbar');
-something.addEventListener('keyup', EnterSearch);
+
+$("#searchbar").on('keyup', EnterSearch);
 function EnterSearch(event) {
   if (event.keyCode === 13){
     var searchResult = document.getElementById('searchbar').value;
