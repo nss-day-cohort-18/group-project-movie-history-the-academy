@@ -38,12 +38,17 @@ $("#auth-btn").click(function(){
     console.log("result from login", results.user.uid);
     user.setUser(results.user.uid);
     $(".select-button").show();
+    $("#current-list-visible").html("My Movies");
+
   });
 });
 
 $("#logout").click(function(){
   console.log("clicked log out");
   user.logOut();
+  $(".select-button").hide();
+  $(".hidden-div").hide();
+  $("#current-list-visible").html("");
   // loadMoviesToDOM();
 });
 
