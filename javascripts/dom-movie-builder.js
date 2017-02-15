@@ -3,12 +3,13 @@
 //this file will build the movie cards and push them to the dom
 
 let $ = require('jquery');
+let Handlebars = require('hbsfy/runtime');
 // function makeMovieList(movieData) {
-// 	let $movieDisplay = 
+// 	let $movieDisplay =
 // };
 
 //this takes the handlebars template and creates the cards by looping through the api file to list all the search results
-//may have to put a loop in here to cut the output of search results.   
+//may have to put a loop in here to cut the output of search results.
 function createHTML(searchResult) {
 	var movieTemplate = document.getElementById('movie-cards').innerHTML;
 	var compiledTemplate = Handlebars.compile(movieTemplate);

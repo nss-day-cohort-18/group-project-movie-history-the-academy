@@ -1,9 +1,11 @@
 "use strict";
+
 function getKey() {
-  return { // MAKE SURE TO NOT PUSH UP API TO GITHUB
-    apiKey: "AIzaSyAyUnXNmHbM9S5PGYamDa8QjCiNh_EfLrM",
-    authDomain: "movie-history-group-proj-dfc09.firebaseapp.com",
-    databaseURL: "https://movie-history-group-proj-dfc09.firebaseio.com"
+  return {
+    apiKey: "AIzaSyC-MfM-iF31UWn9bG2R_V-76_a5hred37A",
+    authDomain: "movie-history-6e707.firebaseapp.com",
+    databaseURL: "https://movie-history-6e707.firebaseio.com"
   };
 }
+
 module.exports = getKey;
