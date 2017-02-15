@@ -23,21 +23,50 @@
     </div>
   </nav>
 
-  <div id="movie-container"></div>
-
-  <script id="movie-cards" type="text/x-handlebars-template">
-      {{#each results}}
-        <div id="photo-div">
-          <img src="{{poster_path}}">
+    <div id="movie-container" class="container">
+        <div id="buttons-container">
+            <input id="search-results-btn" type="button" value="Show Untracked" class="btn">
+            <input id="unwatched-btn" type="button" value="Show Unwatched" class="btn">
+            <input id="watched-btn" type="button" value="Show Watched" class="btn">
+            <input id="favorites-btn" type="button" value="Favorites" class="btn">
         </div>
 
-        <div id="info-div">
-          <h3>{{title}}</h3>
-          <span>{{vote_average}}</span>
-          <p>{{overview}}</p>
-        </div>
-      {{/each}}
-  </script>
+
+    
+    <div id="search-results" class="container">
+        <h2>SEARCH RESULTS</h2>
+    </div>
+
+    <div id="my-movies" class="container">
+        <h2>MY MOVIES</h2>
+    </div>
+
+
+    <div id="my-watched-movies" class="container">
+        <h2>MY WATCHED MOVIES</h2>
+    </div>
+
+
+    <div id="favorites" class="container">
+        <h2>FAVORITES</h2>
+        <div id="slider-container">
+            <input type="range" min="1" max="10" value="10" step="1">
+        </div>    
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+
 
 
 
