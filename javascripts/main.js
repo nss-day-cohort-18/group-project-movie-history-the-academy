@@ -5,6 +5,12 @@ let $ = require('jquery'),
     templates = require("./dom-movie-builder"),
     user = require("./user");
 user.logOut();
+
+$( document ).ready(function() {
+// Hides buttons and divs until logged in
+  $(".select-button").hide();
+  $(".hidden-div").hide();
+});
 // Using the REST API
 function loadMoviesToDOM(searchResult) {
   console.log("Where the movies at??");
@@ -31,6 +37,7 @@ $("#auth-btn").click(function(){
   .then(function(results){
     console.log("result from login", results.user.uid);
     user.setUser(results.user.uid);
+    $(".select-button").show();
   });
 });
 
@@ -56,18 +63,42 @@ function buildMovieObj() {//this function needs work, but I don't want to mess w
 
 
 
-//this is the beginning of the function to run a api search on the enter key
+// Listener for the search box
+$("#searchbar").keypress(function(e) {
+	showSearch(e);
+});
 
-$("#searchbar").on('keyup', EnterSearch);
-function EnterSearch(event) {
-  if (event.keyCode === 13){
-    var searchResult = document.getElementById('searchbar').value;
-    console.log("searchResult", searchResult);
-    loadMoviesToDOM(searchResult);
-  }
+// When searching and pressing enter, hides all Divs then shows the My Searched Movie DIV
+// and adds which current list you are looking at in h2
+function showSearch(e) {
+	if (e.keyCode == '13') {
+		let input = $("#searchbar").val();
+		$("#searchbar").val("");
+		console.log("Input: ", input);
+		$(".hidden-div").hide();
+		$("#search-results").show();
+		$("#current-list-visible").html("My Movie Search");
+	}
 }
 
-
-
-
-
+// Listeners on buttons to add backgrounds to active button and hides other associated
+// Divs while showing DIV associated with that button
+$(".select-button").click(function(event) {
+	$(".hidden-div").hide();
+  if (event.currentTarget.id === "search-results-btn") {
+		$("#current-list-visible").html("My Movie Search");
+		$("#search-results").show();
+  }
+  if (event.currentTarget.id === "unwatched-btn"){
+		$("#current-list-visible").html("My Unwatched Movies");
+		$("#my-movies").show();
+  }
+  if (event.currentTarget.id === "watched-btn") {
+		$("#current-list-visible").html("My Watched Movies");
+		$("#my-watched-movies").show();
+	}
+	if (event.currentTarget.id === "favorites-btn") {
+		$("#current-list-visible").html("My Favorites");
+		$("#favorites").show();
+	}
+});
