@@ -4,10 +4,7 @@
 
 let $ = require('jquery'); // Might not be necesary
 var firebase = require("./firebaseConfig");
-<<<<<<< HEAD
 var user = require("./user.js");
-=======
->>>>>>> master
 
 // Gets all movies with specified UID
 // function getMovies(user){
@@ -25,7 +22,6 @@ var user = require("./user.js");
 //  });
 // }
 
-<<<<<<< HEAD
 function getMovies(searchResult){
   return new Promise(function(resolve, reject){
     $.ajax({
@@ -37,41 +33,10 @@ function getMovies(searchResult){
     }).fail( function(error){
       console.log("ERROR");
       reject(error);
-=======
-function getMovies(){
-  return new Promise(function(resolve, reject){
-    $.ajax({
-      // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
-      url: `https://movie-history-6e707.firebaseio.com/movies.json`,
-      type: "GET"
-    }).done( function(movieData){
-      resolve(movieData);
-    }).fail( function(error){
-      console.log("ERROR");
-      reject(error);
     });
   });
 }
 
-
-// Adds a movie (with a UID)
-function addMovie(movieObject){
-  console.log("Adding Song: ", movieObject);
-
-  return new Promise(function(resolve, reject){
-    $.ajax({
-      url: `https://movie-history-6e707.firebaseio.com`,
-      type: "POST",
-      data: JSON.stringify(movieObject),
-      dataType: "json"
-    }).done( function(movieID){
-      resolve(movieID);
->>>>>>> master
-    });
-  });
-}
-
-<<<<<<< HEAD
 
 // function that adds movie to the database
 function addToMyMovies() {
@@ -103,12 +68,6 @@ function addToMyMovies() {
 function deleteMovie(movieID){
   return new Promise( function(resolve, reject){
     $.ajax({
-=======
-// Deletes a movie using the movie's UID
-function deleteMovie(movieID){
-  return new Promise( function(resolve, reject){
-    $.ajax({ 
->>>>>>> master
       url: `https://movie-history-6e707.firebaseio.com/movies/${movieID}.json`,
       method: "DELETE"
     }).done( function(){
@@ -117,21 +76,16 @@ function deleteMovie(movieID){
   });
 }
 
-<<<<<<< HEAD
 module.exports = {getMovies, addToMyMovies, deleteMovie};
 },{"./firebaseConfig":4,"./user.js":6,"jquery":30}],2:[function(require,module,exports){
-=======
-module.exports = {getMovies, addMovie, deleteMovie};
-},{"./firebaseConfig":4,"jquery":30}],2:[function(require,module,exports){
->>>>>>> master
 "use strict";
 
 //this file will build the movie cards and push them to the dom
 
 let $ = require('jquery');
 let Handlebars = require('hbsfy/runtime');
-<<<<<<< HEAD
 let user = require("./user.js");
+let db = require("./db-interaction.js");
 
 
 function addSearched(movieData) {
@@ -152,39 +106,10 @@ function addSearched(movieData) {
                                         </section>`);
     }
     // $(".add-to-my-watched-movies").click(addToWatched);
-    $(".add-to-my-movies").click(addToMyMovies);
+    $(".add-to-my-movies").click(db.addToMyMovies);
 }
 
-// function that adds movie to the database
-function addToMyMovies() {
-    console.log('you clicked I want to see this movie');
-    var currentCard = $(event.currentTarget);
-    console.log('url:', currentCard.siblings("img").attr("src"));
-    var currentUser = user.getUser();
-    var myMovie = {
-        "title": currentCard.siblings("h3").html(),
-        "year": currentCard.siblings("h4").html(),
-        "actors": currentCard.siblings("h5").html(),
-        "userID": currentUser,
-        "rating": "",
-        "posterURL": currentCard.siblings("img").attr("src")
-    };
-    return new Promise (function(resolve, reject) {
-        $.ajax({
-            url: "https://movie-history-6e707.firebaseio.com/movies.json",
-            type: "POST",
-            data: JSON.stringify(myMovie),
-            dataType: "json"
-        }).done(function(movie) {
-            resolve(movie);
-        });
-    });
-}
-=======
 
-
-
->>>>>>> master
 // function createHTML(searchResult) {
 // 	var movieTemplate = document.getElementById('movie-cards').innerHTML;
 // 	var compiledTemplate = Handlebars.compile(movieTemplate);
@@ -201,7 +126,7 @@ function addToMyMovies() {
 //probably need to use the first part of the below link for grabbing the poster from the api
 //https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
 
-},{"./user.js":6,"hbsfy/runtime":29,"jquery":30}],3:[function(require,module,exports){
+},{"./db-interaction.js":1,"./user.js":6,"hbsfy/runtime":29,"jquery":30}],3:[function(require,module,exports){
 "use strict";
 
 function getKey() {
@@ -242,14 +167,12 @@ let $ = require('jquery'),
     user = require("./user");
 user.logOut();
 
-<<<<<<< HEAD
-=======
 $( document ).ready(function() {
 // Hides buttons and divs until logged in
   $(".select-button").hide();
   $(".hidden-div").hide();
 });
->>>>>>> master
+
 // Using the REST API
 function loadMoviesToDOM(searchResult) {
   // console.log("Where the movies at??");
@@ -262,10 +185,6 @@ function loadMoviesToDOM(searchResult) {
       movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
     });
     console.log("movie object with id", movieData);
-<<<<<<< HEAD
-=======
-
->>>>>>> master
     // NEED TO POPULATE DOM HERE
 
   });
@@ -301,24 +220,7 @@ function buildMovieObj() {//this function needs work, but I don't want to mess w
   };
   return movieObj;
 }
-<<<<<<< HEAD
 
-
-
-
-//this is the beginning of the function to run a api search on the enter key
-
-$("#searchbar").on('keyup', EnterSearch);
-function EnterSearch(event) {
-  if (event.keyCode === 13){
-    var searchResult = document.getElementById('searchbar').value;
-    console.log("searchResult", searchResult);
-    loadMoviesToDOM(searchResult);
-  }
-}
-=======
-
->>>>>>> master
 
 
 

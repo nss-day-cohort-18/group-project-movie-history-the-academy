@@ -5,6 +5,7 @@
 let $ = require('jquery');
 let Handlebars = require('hbsfy/runtime');
 let user = require("./user.js");
+let db = require("./db-interaction.js");
 
 
 function addSearched(movieData) {
@@ -25,7 +26,7 @@ function addSearched(movieData) {
                                         </section>`);
     }
     // $(".add-to-my-watched-movies").click(addToWatched);
-    $(".add-to-my-movies").click(addToMyMovies);
+    $(".add-to-my-movies").click(db.addToMyMovies);
 }
 
 
