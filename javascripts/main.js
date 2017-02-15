@@ -5,9 +5,10 @@ let $ = require('jquery'),
     templates = require("./dom-movie-builder"),
     user = require("./user");
 user.logOut();
+
 // Using the REST API
 function loadMoviesToDOM(searchResult) {
-  console.log("Where the movies at??");
+  // console.log("Where the movies at??");
   db.getMovies(searchResult)
   .then((movieData)=>{//movieData comes from the getMovies function, by the resolution of the Promise
     console.log("got data", movieData);
@@ -17,7 +18,6 @@ function loadMoviesToDOM(searchResult) {
       movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
     });
     console.log("movie object with id", movieData);
-
     // NEED TO POPULATE DOM HERE
 
   });
