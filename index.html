@@ -23,53 +23,31 @@
     </div>
   </nav>
 
-    <div id="movie-container" class="container">
-        <div id="buttons-container">
-            <input id="search-results-btn" type="button" value="Show Untracked" class="btn">
-            <input id="unwatched-btn" type="button" value="Show Unwatched" class="btn">
-            <input id="watched-btn" type="button" value="Show Watched" class="btn">
-            <input id="favorites-btn" type="button" value="Favorites" class="btn">
-        </div>
-
-
-    
-    <div id="search-results" class="container">
-        <h2>SEARCH RESULTS</h2>
+  <div id="movie-container" class="container">
+    <h2 id="current-list-visible"></h2>
+    <div id="buttons-container">
+      <input id="search-results-btn" type="button" value="Show Untracked" class="btn select-button">
+      <input id="unwatched-btn" type="button" value="Show Unwatched" class="btn select-button">
+      <input id="watched-btn" type="button" value="Show Watched" class="btn select-button">
+      <input id="favorites-btn" type="button" value="Favorites" class="btn select-button">
     </div>
 
-    <div id="my-movies" class="container">
-        <h2>MY MOVIES</h2>
+    <div id="search-results" class="container hidden-div">
+      <h2>SEARCH RESULTS</h2>
     </div>
-
-
-    <div id="my-watched-movies" class="container">
-        <h2>MY WATCHED MOVIES</h2>
+    <div id="my-movies" class="container hidden-div">
+      <h2>MY MOVIES</h2>
     </div>
-
-
-    <div id="favorites" class="container">
+    <div id="my-watched-movies" class="container hidden-div">
+      <h2>MY WATCHED MOVIES</h2>
+    </div>
+    <div id="favorites" class="container hidden-div">
         <h2>FAVORITES</h2>
         <div id="slider-container">
             <input type="range" min="1" max="10" value="10" step="1">
-        </div>    
+        </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-
-
-
-
+  </div> <!-- movie-container end div -->
   <script src="/dist/jquery.min.js" type="text/javascript"></script>
   <script src="/dist/js/bootstrap.min.js" type="text/javascript"></script>
   <script src="dist/app.js" type="text/javascript"></script>

@@ -28,31 +28,7 @@ function addSearched(movieData) {
     $(".add-to-my-movies").click(addToMyMovies);
 }
 
-// function that adds movie to the database
-function addToMyMovies() {
-    console.log('you clicked I want to see this movie');
-    var currentCard = $(event.currentTarget);
-    console.log('url:', currentCard.siblings("img").attr("src"));
-    var currentUser = user.getUser();
-    var myMovie = {
-        "title": currentCard.siblings("h3").html(),
-        "year": currentCard.siblings("h4").html(),
-        "actors": currentCard.siblings("h5").html(),
-        "userID": currentUser,
-        "rating": "",
-        "posterURL": currentCard.siblings("img").attr("src")
-    };
-    return new Promise (function(resolve, reject) {
-        $.ajax({
-            url: "https://movie-history-6e707.firebaseio.com/movies.json",
-            type: "POST",
-            data: JSON.stringify(myMovie),
-            dataType: "json"
-        }).done(function(movie) {
-            resolve(movie);
-        });
-    });
-}
+
 // function createHTML(searchResult) {
 // 	var movieTemplate = document.getElementById('movie-cards').innerHTML;
 // 	var compiledTemplate = Handlebars.compile(movieTemplate);

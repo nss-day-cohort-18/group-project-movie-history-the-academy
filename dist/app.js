@@ -4,7 +4,10 @@
 
 let $ = require('jquery'); // Might not be necesary
 var firebase = require("./firebaseConfig");
+<<<<<<< HEAD
 var user = require("./user.js");
+=======
+>>>>>>> master
 
 // Gets all movies with specified UID
 // function getMovies(user){
@@ -22,6 +25,7 @@ var user = require("./user.js");
 //  });
 // }
 
+<<<<<<< HEAD
 function getMovies(searchResult){
   return new Promise(function(resolve, reject){
     $.ajax({
@@ -33,10 +37,41 @@ function getMovies(searchResult){
     }).fail( function(error){
       console.log("ERROR");
       reject(error);
+=======
+function getMovies(){
+  return new Promise(function(resolve, reject){
+    $.ajax({
+      // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
+      url: `https://movie-history-6e707.firebaseio.com/movies.json`,
+      type: "GET"
+    }).done( function(movieData){
+      resolve(movieData);
+    }).fail( function(error){
+      console.log("ERROR");
+      reject(error);
     });
   });
 }
 
+
+// Adds a movie (with a UID)
+function addMovie(movieObject){
+  console.log("Adding Song: ", movieObject);
+
+  return new Promise(function(resolve, reject){
+    $.ajax({
+      url: `https://movie-history-6e707.firebaseio.com`,
+      type: "POST",
+      data: JSON.stringify(movieObject),
+      dataType: "json"
+    }).done( function(movieID){
+      resolve(movieID);
+>>>>>>> master
+    });
+  });
+}
+
+<<<<<<< HEAD
 
 // function that adds movie to the database
 function addToMyMovies() {
@@ -68,6 +103,12 @@ function addToMyMovies() {
 function deleteMovie(movieID){
   return new Promise( function(resolve, reject){
     $.ajax({
+=======
+// Deletes a movie using the movie's UID
+function deleteMovie(movieID){
+  return new Promise( function(resolve, reject){
+    $.ajax({ 
+>>>>>>> master
       url: `https://movie-history-6e707.firebaseio.com/movies/${movieID}.json`,
       method: "DELETE"
     }).done( function(){
@@ -76,14 +117,20 @@ function deleteMovie(movieID){
   });
 }
 
+<<<<<<< HEAD
 module.exports = {getMovies, addToMyMovies, deleteMovie};
 },{"./firebaseConfig":4,"./user.js":6,"jquery":30}],2:[function(require,module,exports){
+=======
+module.exports = {getMovies, addMovie, deleteMovie};
+},{"./firebaseConfig":4,"jquery":30}],2:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 //this file will build the movie cards and push them to the dom
 
 let $ = require('jquery');
 let Handlebars = require('hbsfy/runtime');
+<<<<<<< HEAD
 let user = require("./user.js");
 
 
@@ -133,6 +180,11 @@ function addToMyMovies() {
         });
     });
 }
+=======
+
+
+
+>>>>>>> master
 // function createHTML(searchResult) {
 // 	var movieTemplate = document.getElementById('movie-cards').innerHTML;
 // 	var compiledTemplate = Handlebars.compile(movieTemplate);
@@ -190,6 +242,14 @@ let $ = require('jquery'),
     user = require("./user");
 user.logOut();
 
+<<<<<<< HEAD
+=======
+$( document ).ready(function() {
+// Hides buttons and divs until logged in
+  $(".select-button").hide();
+  $(".hidden-div").hide();
+});
+>>>>>>> master
 // Using the REST API
 function loadMoviesToDOM(searchResult) {
   // console.log("Where the movies at??");
@@ -202,6 +262,10 @@ function loadMoviesToDOM(searchResult) {
       movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
     });
     console.log("movie object with id", movieData);
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
     // NEED TO POPULATE DOM HERE
 
   });
@@ -215,6 +279,7 @@ $("#auth-btn").click(function(){
   .then(function(results){
     console.log("result from login", results.user.uid);
     user.setUser(results.user.uid);
+    $(".select-button").show();
   });
 });
 
@@ -236,6 +301,7 @@ function buildMovieObj() {//this function needs work, but I don't want to mess w
   };
   return movieObj;
 }
+<<<<<<< HEAD
 
 
 
@@ -250,11 +316,51 @@ function EnterSearch(event) {
     loadMoviesToDOM(searchResult);
   }
 }
+=======
+
+>>>>>>> master
 
 
 
+// Listener for the search box
+$("#searchbar").keypress(function(e) {
+	showSearch(e);
+});
 
+// When searching and pressing enter, hides all Divs then shows the My Searched Movie DIV
+// and adds which current list you are looking at in h2
+function showSearch(e) {
+	if (e.keyCode == '13') {
+		let input = $("#searchbar").val();
+		$("#searchbar").val("");
+		console.log("Input: ", input);
+		$(".hidden-div").hide();
+		$("#search-results").show();
+		$("#current-list-visible").html("My Movie Search");
+	}
+}
 
+// Listeners on buttons to add backgrounds to active button and hides other associated
+// Divs while showing DIV associated with that button
+$(".select-button").click(function(event) {
+	$(".hidden-div").hide();
+  if (event.currentTarget.id === "search-results-btn") {
+		$("#current-list-visible").html("My Movie Search");
+		$("#search-results").show();
+  }
+  if (event.currentTarget.id === "unwatched-btn"){
+		$("#current-list-visible").html("My Unwatched Movies");
+		$("#my-movies").show();
+  }
+  if (event.currentTarget.id === "watched-btn") {
+		$("#current-list-visible").html("My Watched Movies");
+		$("#my-watched-movies").show();
+	}
+	if (event.currentTarget.id === "favorites-btn") {
+		$("#current-list-visible").html("My Favorites");
+		$("#favorites").show();
+	}
+});
 
 },{"./db-interaction":1,"./dom-movie-builder":2,"./user":6,"jquery":30}],6:[function(require,module,exports){
 "use strict";
