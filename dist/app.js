@@ -172,6 +172,9 @@ $("#auth-btn").click(function(){
 $("#logout").click(function(){
   console.log("clicked log out");
   user.logOut();
+  $(".select-button").hide();
+  $(".hidden-div").hide();
+  $("#current-list-visible").html("");
   // loadMoviesToDOM();
 });
 
