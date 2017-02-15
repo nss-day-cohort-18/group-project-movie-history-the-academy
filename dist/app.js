@@ -1,73 +1,71 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
-// This module has no knowledge of the DOM, or where the data goes after it is fetched from Firebase.
-// It is only concerned with getting and setting data in the db
-let $ = require('jquery'),
-    firebase = require("./firebaseConfig");
-// ****************************************
-// DB interaction using Firebase REST API
-// ****************************************
-//get user
+'use strict';
 
-function getMovies(searchResult) {//this function grabs all the movies that belong to the user name, this is done by the orderBy = etc
-// callout to external data base
-//promise
-console.log("searchResult", searchResult);
-return new Promise(function(resolve,reject){
-  $.ajax({
-    url:`https://api.themoviedb.org/3/search/movie?api_key=56696d263700546dd8f63b84a5e3d534&query=${searchResult}`
-  }).done(function(movieData){
-    resolve(movieData);
-  });
-});
-}
-function addMovie(movieFormObj) {//this function adds a movie selection back onto the movie.json that is on the firebase database
-  console.log("addMovie", movieFormObj);
+
+let $ = require('jquery'); // Might not be necesary
+var firebase = require("./firebaseConfig");
+
+// Gets all movies with specified UID
+// function getMovies(user){
+//  return new Promise(function(resolve, reject){
+//    $.ajax({
+//      url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`,
+//      type: "GET"
+//    }).done(function(movieData){
+//      console.log("GETMOVIES(): ", movieData);
+//      resolve(movieData);
+//    }).fail( function(error){
+//      console.log("ERROR");
+//      reject(error);
+//    });
+//  });
+// }
+
+function getMovies(){
   return new Promise(function(resolve, reject){
     $.ajax({
-      url:"https://music-history-boiler-plate.firebaseio.com/songs.json",//need to update this url with the correct firebase for this project
-      type:'POST',
-      data: JSON.stringify(movieFormObj),
-      dataType: 'json'
-    }).done(function(movieID){
-      resolve(movieID);
-    }).fail(function(error){
+      // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
+      url: `https://movie-history-6e707.firebaseio.com/movies.json`,
+      type: "GET"
+    }).done( function(movieData){
+      resolve(movieData);
+    }).fail( function(error){
+      console.log("ERROR");
       reject(error);
     });
   });
 }
-// POST - Submits data to be processed to a specified resource. Takes one parameter.
-// function deleteMovie(movieID) {
-//     return new Promise(function(resolve, reject) {
-//         $.ajax({
-//             url: `https://music-history-fb486.firebaseio.com/songs/${movieID}.json`,//need to update this url with the correct firebase for this project
-//             method: "DELETE",
-//         }).done(()=>{
-//             resolve();
-//         });
-//     });
-// }
-// //for use in stretch goal
-// // function getMovie(movieID) {
-// //   return new Promise(function(resolve, reject){
-// //     $.ajax({
-// //       url: `https://music-history-fb486.firebaseio.com/songs/${movieID}.json`,//need to update this url with the correct firebase for this project
-// //     }).done(function(movieData){
-// //       resolve(movieData);
-// //     }).fail(function(error){
-// //       reject(error);
-// //     });
-// //   });
-// // }
-// // GET - Requests/read data from a specified resource
-// // PUT - Update data to a specified resource. Takes two parameters.
 
-module.exports = {
-  getMovies,
-  // addMovie,
-  // getMovie,
-  // deleteMovie,
-};
+
+// Adds a movie (with a UID)
+function addMovie(movieObject){
+  console.log("Adding Song: ", movieObject);
+
+  return new Promise(function(resolve, reject){
+    $.ajax({
+      url: `https://movie-history-6e707.firebaseio.com`,
+      type: "POST",
+      data: JSON.stringify(movieObject),
+      dataType: "json"
+    }).done( function(movieID){
+      resolve(movieID);
+    });
+  });
+}
+
+// Deletes a movie using the movie's UID
+function deleteMovie(movieID){
+  return new Promise( function(resolve, reject){
+    $.ajax({ 
+      url: `https://movie-history-6e707.firebaseio.com/movies/${movieID}.json`,
+      method: "DELETE"
+    }).done( function(){
+      resolve();
+    });
+  });
+}
+
+module.exports = {getMovies, addMovie, deleteMovie};
 },{"./firebaseConfig":4,"jquery":30}],2:[function(require,module,exports){
 "use strict";
 
@@ -75,23 +73,20 @@ module.exports = {
 
 let $ = require('jquery');
 let Handlebars = require('hbsfy/runtime');
-// function makeMovieList(movieData) {
-// 	let $movieDisplay =
-// };
 
-//this takes the handlebars template and creates the cards by looping through the api file to list all the search results
-//may have to put a loop in here to cut the output of search results.
-function createHTML(searchResult) {
-	var movieTemplate = document.getElementById('movie-cards').innerHTML;
-	var compiledTemplate = Handlebars.compile(movieTemplate);
-	var newGeneratedHTML = compiledTemplate(searchResult);
-	console.log("movieTemplate", movieTemplate);
 
-	//the next two lines of code put the result of the template into the empty div that the user will see
-	var movieContainer = document.getElementById('movie-container');
-	movieContainer.innerHTML = newGeneratedHTML;
 
-}
+// function createHTML(searchResult) {
+// 	var movieTemplate = document.getElementById('movie-cards').innerHTML;
+// 	var compiledTemplate = Handlebars.compile(movieTemplate);
+// 	var newGeneratedHTML = compiledTemplate(searchResult);
+// 	console.log("movieTemplate", movieTemplate);
+
+// 	//the next two lines of code put the result of the template into the empty div that the user will see
+// 	var movieContainer = document.getElementById('movie-container');
+// 	movieContainer.innerHTML = newGeneratedHTML;
+
+// }
 
 
 //probably need to use the first part of the below link for grabbing the poster from the api
@@ -115,13 +110,18 @@ module.exports = getKey;
 let firebase = require("firebase/app"),
     fb = require("./fb-getter"),
     fbData = fb();
+
+   
 require("firebase/auth");
 require("firebase/database");
+
+
 var config = {
   apiKey: fbData.apiKey,
   databaseURL: fbData.databaseURL,
   authDomain: fbData.authDomain
 };
+
 firebase.initializeApp(config);
 module.exports = firebase;
 
@@ -133,56 +133,39 @@ let $ = require('jquery'),
     templates = require("./dom-movie-builder"),
     user = require("./user");
 user.logOut();
+
+$( document ).ready(function() {
+// Hides buttons and divs until logged in
+  $(".select-button").hide();
+  $(".hidden-div").hide();
+});
 // Using the REST API
 function loadMoviesToDOM(searchResult) {
   console.log("Where the movies at??");
   db.getMovies(searchResult)
   .then((movieData)=>{//movieData comes from the getMovies function, by the resolution of the Promise
     console.log("got data", movieData);
-    var idArray = Object.keys(movieData.results);//putting all the keys (in this case, movie names) from the movie list on firebase
+    var idArray = Object.keys(movieData);//putting all the keys (in this case, movie names) from the movie list on firebase
     idArray.forEach(function(key){
+      console.log("MovieData[i]: ", movieData[key]);
       movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
     });
     console.log("movie object with id", movieData);
-    templates.createHTML(movieData);//this is a function on the dom-movie-builder file. 
+
+    // NEED TO POPULATE DOM HERE
+
   });
 }
-// loadMoviesToDOM(); //<--Move to auth section after adding login btn
-function loadUserMovies(argument) {
-    let currentUser = user.getUser();//setting the currentUser info to a variable of the same name
-    db.getMovies(currentUser);//running the user info through the getMovies function, gets all movies out of firebase that are tied to this user's uid
-    console.log("currentUser", currentUser);
-}
 
-// Send newSong data to db then reload DOM with updated song data
-$(document).on("click", ".save_new_btn", function() {
-  console.log("click save new movie");
-  let movieObj = buildMovieObj();
-  db.addMovie(movieObj)
-  .then(function(movieID){
-    loadUserMovies(); //<--Move to auth section after adding login btn
-  });
-});
 
-// Remove song then reload the DOM w/out new song
-$(document).on("click", ".delete-btn", function() {
-  console.log("clicked the delete movie", $(this).data("delete-id"));
-  let movieID = $(this).data("delete-id");
-  db.deleteMovie(movieID)
-  .then(()=>{
-    loadMoviesToDOM();
-  });
-});
-// $("#view-songs").click(function(){
-//   $(".uiContainer--wrapper").html("");
-//   loadMoviesToDOM();
-// });
+
 $("#auth-btn").click(function(){
   console.log("clicked auth");
   user.logInGoogle()
   .then(function(results){
     console.log("result from login", results.user.uid);
     user.setUser(results.user.uid);
+    $(".select-button").show();
   });
 });
 
@@ -204,30 +187,49 @@ function buildMovieObj() {//this function needs work, but I don't want to mess w
   };
   return movieObj;
 }
-// Load the new movie form
-$("#add-movie").click(function() {
-  console.log("clicked add movie");
-  var movieForm = templates.movieForm()
-  .then(function(songForm) {
-    $(".uiContainer--wrapper").html(movieForm);
-  });
+
+
+
+
+// Listener for the search box
+$("#searchbar").keypress(function(e) {
+	showSearch(e);
 });
 
-//this is the beginning of the function to run a api search on the enter key
-var something = document.getElementById('searchbar');
-something.addEventListener('keyup', EnterSearch);
-function EnterSearch(event) {
-  if (event.keyCode === 13){
-    var searchResult = document.getElementById('searchbar').value;
-    console.log("searchResult", searchResult);
-    loadMoviesToDOM(searchResult);
-  }
+// When searching and pressing enter, hides all Divs then shows the My Searched Movie DIV
+// and adds which current list you are looking at in h2
+function showSearch(e) {
+	if (e.keyCode == '13') {
+		let input = $("#searchbar").val();
+		$("#searchbar").val("");
+		console.log("Input: ", input);
+		$(".hidden-div").hide();
+		$("#search-results").show();
+		$("#current-list-visible").html("My Movie Search");
+	}
 }
 
-
-
-
-
+// Listeners on buttons to add backgrounds to active button and hides other associated
+// Divs while showing DIV associated with that button
+$(".select-button").click(function(event) {
+	$(".hidden-div").hide();
+  if (event.currentTarget.id === "search-results-btn") {
+		$("#current-list-visible").html("My Movie Search");
+		$("#search-results").show();
+  }
+  if (event.currentTarget.id === "unwatched-btn"){
+		$("#current-list-visible").html("My Unwatched Movies");
+		$("#my-movies").show();
+  }
+  if (event.currentTarget.id === "watched-btn") {
+		$("#current-list-visible").html("My Watched Movies");
+		$("#my-watched-movies").show();
+	}
+	if (event.currentTarget.id === "favorites-btn") {
+		$("#current-list-visible").html("My Favorites");
+		$("#favorites").show();
+	}
+});
 
 },{"./db-interaction":1,"./dom-movie-builder":2,"./user":6,"jquery":30}],6:[function(require,module,exports){
 "use strict";
