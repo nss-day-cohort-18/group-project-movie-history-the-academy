@@ -64,4 +64,28 @@ function deleteMovie(movieID){
   });
 }
 
-module.exports = {getMovies, addMovie, deleteMovie};
+
+function searchFirebase(searchString){
+    return new Promise(function(resolve, reject){
+        var foundMovies = [];
+        var tempMovie;
+        $.ajax({
+            // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
+            url: `https://movie-history-6e707.firebaseio.com/movies.json`,
+            type: "GET"
+        }).done( function(movieData){
+            for(var i = 0; i < movieData.length; i++){
+              tempMovie = movieData[i].title.toLowerCase();
+                if(tempMovie.includes(searchString)){
+                    foundMovies.push(movieData[i]);
+                }
+            }
+            resolve(foundMovies);
+        }).fail( function(error){
+            console.log("ERROR");
+            reject(error);
+        });
+    });
+}
+
+module.exports = {getMovies, addMovie, deleteMovie, searchFirebase};

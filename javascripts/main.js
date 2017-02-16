@@ -3,7 +3,9 @@
 let $ = require('jquery'),
     db = require("./db-interaction"),
     templates = require("./dom-movie-builder"),
-    user = require("./user");
+    user = require("./user"),
+    api = require("./api-interaction.js");
+
 user.logOut();
 
 $( document ).ready(function() {
@@ -11,6 +13,8 @@ $( document ).ready(function() {
   $(".select-button").hide();
   $(".hidden-div").hide();
 });
+
+
 // Using the REST API
 function loadMoviesToDOM(searchResult) {
   console.log("Where the movies at??");
@@ -78,12 +82,35 @@ $("#searchbar").keypress(function(e) {
 function showSearch(e) {
 	if (e.keyCode == '13') {
 		let input = $("#searchbar").val();
+
+        // Hide or show divs
 		$("#searchbar").val("");
-		console.log("Input: ", input);
 		$(".hidden-div").hide();
 		$("#search-results").show();
 		$("#current-list-visible").html("My Movie Search");
-	}
+
+        // Declare variables to receive search results
+        var firebaseMovies = [];
+        var searchedMovies = [];
+
+        // Look for instances of the searched string in the database
+        db.searchFirebase(input)
+        .then( function(firebaseResults){
+            firebaseMovies = firebaseResults;
+        });
+
+        // Search for instances of the string using the API
+        api.searchFor(input)
+        .then( function(apiResult){
+            searchedMovies = apiResult.results;
+        })
+        // Then find duplicates among the two arrays of movies
+        .then( function(){
+            console.log("[API] Searched: ", searchedMovies);
+            console.log("[FIRE] Found: ", firebaseMovies);
+            findDuplicates(searchedMovies, firebaseMovies);
+        });
+    }
 }
 
 // Listeners on buttons to add backgrounds to active button and hides other associated
@@ -107,3 +134,30 @@ $(".select-button").click(function(event) {
 		$("#favorites").show();
 	}
 });
+
+
+
+// Finds duplicates among movies searched in (1) The Api and (2) Firebase
+function findDuplicates(searchedMovies, firebaseMoviesFound){
+    var i, j;
+
+
+    var combinedMoviesToShow = searchedMovies;
+
+
+    for(i = 0; i < searchedMovies.length; i++){
+        for(j = 0; j < firebaseMoviesFound.length; j++){
+            if(searchedMovies[i].id === firebaseMoviesFound[j].id){
+                // Id the DB movie(s) are already in the search results:
+                console.log("DUPLICATE!!: ", searchedMovies[i].title);
+                // Do nothing
+            }else{
+                // If the DB movies are NOT included in the search results:
+                // DO NOTHING
+            }
+        }
+    }
+    console.log("FINAL MOVIES THAT WILL POPULATE THE DOM (upon hitting enter):\n", combinedMoviesToShow);
+}
+
+
