@@ -23,7 +23,31 @@ function showSearch(movieData) {
                                             <img src="https://image.tmdb.org/t/p/w500${moviesArray[i].poster_path}" height="200" >
                                             <h5>No actors listed</h5>
                                             <button type="button" class="add-to-my-movies" value="${moviesArray[i].title}">I want to see this movie</button>
-                                            <button type="button" class="add-to-my-watched-movies" value="add-to-my-watched-movies">I seen this movie</button>
+                                            <div class="stars">
+                                              <form action="">
+                                                <h6>Rate to add to watched movie list:</h6>
+                                                <input class="star star-1 radio_item" value="1" id="star-1" type="radio" name="star"/>
+                                                <label class="star star-1 label_item" title="1 Star" for="star-1">1★</label>
+                                                <input class="star star-2 radio_item" value="2" id="star-2" type="radio" name="star"/>
+                                                <label class="star star-2 label_item" title="2 Stars" for="star-2">2★</label>
+                                                <input class="star star-3 radio_item" value="3" id="star-3" type="radio" name="star"/>
+                                                <label class="star star-3 label_item" title="3 Stars" for="star-3">3★</label>
+                                                <input class="star star-4 radio_item" value="4" id="star-4" type="radio" name="star"/>
+                                                <label class="star star-4 label_item" title="4 Stars" for="star-4">4★</label>
+                                                <input class="star star-5 radio_item" value="5" id="star-5" type="radio" name="star"/>
+                                                <label class="star star-5 label_item" title="5 Stars" for="star-5">5★</label>
+                                                <input class="star star-6 radio_item" value="6" id="star-6" type="radio" name="star"/>
+                                                <label class="star star-6 label_item" title="6 Stars" for="star-6">6★</label>
+                                                <input class="star star-7 radio_item" value="7" id="star-7" type="radio" name="star"/>
+                                                <label class="star star-7 label_item" title="7 Stars" for="star-7">7★</label>
+                                                <input class="star star-8 radio_item" value="8" id="star-8" type="radio" name="star"/>
+                                                <label class="star star-8 label_item" title="8 Stars" for="star-8">8★</label>
+                                                <input class="star star-9 radio_item" value="9" id="star-9" type="radio" name="star"/>
+                                                <label class="star star-9 label_item" title="9 Stars" for="star-9">9★</label>
+                                                <input class="star star-10 radio_item" value="10" id="star-10" type="radio" name="star"/>
+                                                <label class="star star-10 label_item" title="10 Stars" for="star-10">10★</label>
+                                              </form>
+                                            </div>
                                         </div>
                                     </section>`);
     }
