@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <title>Movie History</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
   <nav role="navigation" class="navbar navbar-default">
@@ -18,31 +18,38 @@
         <ul class="nav navbar-nav">
             <li id="auth-btn"><a href="#" title="">Sign In</a></li>
           <li id="logout"><a href="#" title="">Logout</a></li>
-        </ul>     
+        </ul>
       </div>
     </div>
   </nav>
 
-  <div id="movie-container"></div>
-    
-  <script id="movie-cards" type="text/x-handlebars-template">
-      {{#each results}}
-        <div id="photo-div">
-          <img src="{{poster_path}}">
+  <div id="movie-container" class="container">
+    <h2 id="current-list-visible"></h2>
+    <div id="buttons-container">
+      <input id="search-results-btn" type="button" value="Show Untracked" class="btn select-button">
+      <input id="unwatched-btn" type="button" value="Show Unwatched" class="btn select-button">
+      <input id="watched-btn" type="button" value="Show Watched" class="btn select-button">
+      <input id="favorites-btn" type="button" value="Favorites" class="btn select-button">
+    </div>
+
+    <div id="search-results" class="container hidden-div">
+      <h2>SEARCH RESULTS</h2>
+    </div>
+    <div id="my-movies" class="container hidden-div">
+      <h2>MY MOVIES</h2>
+    </div>
+    <div id="my-watched-movies" class="container hidden-div">
+      <h2>MY WATCHED MOVIES</h2>
+    </div>
+    <div id="favorites" class="container hidden-div">
+        <h2>FAVORITES</h2>
+        <div id="slider-container">
+            <input type="range" min="1" max="10" value="10" step="1">
         </div>
-
-        <div id="info-div">
-          <h3>{{title}}</h3>
-          <span>{{vote_average}}</span>
-          <p>{{overview}}</p>
-        </div>
-      {{/each}}
-  </script>
-
-
-
-  <!-- <script src="templates/card-grid.hbs"></script> -->
-  <!-- <script src="lib/node_modules/handlebars/dist/handlebars.js"></script> -->
-  <script type='text/javascript' src='dist/app.js'></script>
+    </div>
+  </div> <!-- movie-container end div -->
+  <script src="/dist/jquery.min.js" type="text/javascript"></script>
+  <script src="/dist/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="dist/app.js" type="text/javascript"></script>
 </body>
 </html>
