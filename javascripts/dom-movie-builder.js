@@ -7,27 +7,41 @@ let Handlebars = require('hbsfy/runtime');
 let user = require("./user.js");
 let db = require("./db-interaction.js");
 
-
-function addSearched(movieData) {
-    console.log('addSearched initiated');
-    console.log('movieData.length = ', movieData.length);
-    for (var i = 0; i < movieData.length; i++) {
-        console.log('movieData[i] = ', movieData[i]);
-        $("#suggested-movies").append(
-                                        `<section id="card-${movieData[i]}" class="card-wrapper col-xs-4" >
-                                            <div class="innerCard" style="border: 2px solid black">
-                                                <h3 class="movie-header">${movieData[i].title}</h3>
-                                                <h4 class="movie-year">${movieData[i].year}</h4>
-                                                <img src="${movieData[i].posterURL}" height="200" >
-                                                <h5>${movieData[i].actors}</h5>
-                                                <button type="button" class="add-to-my-movies" value="${movieData[i].title}">I want to see this movie</button>
-                                                <button type="button" class="add-to-my-watched-movies" value="add-to-my-watched-movies">I seen this movie</button>
-                                            </div>
-                                        </section>`);
+// function that adds cards for the movies that match the search term
+function showSearch(movieData) {
+    $("#search-results").html("");
+    console.log('showSearch initiated');
+    // console.log('movieData.length = ', movieData.results.length);
+    var moviesArray = movieData.results;
+    for (var i = 0; i < moviesArray.length; i++) {
+        // console.log('moviesArray[i] = ', moviesArray[i]);
+        $("#search-results").append(
+                                    `<section id="card-${moviesArray[i].id}" class="card-wrapper col-xs-4" >
+                                        <div class="innerCard" style="border: 2px solid black">
+                                            <h3 class="movie-header">${moviesArray[i].title}</h3>
+                                            <h4 class="movie-year">${moviesArray[i].release_date.slice(0, 4)}</h4>
+                                            <img src="https://image.tmdb.org/t/p/w500${moviesArray[i].poster_path}" height="200" >
+                                            <h5>No actors listed</h5>
+                                            <button type="button" class="add-to-my-movies" value="${moviesArray[i].title}">I want to see this movie</button>
+                                            <button type="button" class="add-to-my-watched-movies" value="add-to-my-watched-movies">I seen this movie</button>
+                                        </div>
+                                    </section>`);
     }
     // $(".add-to-my-watched-movies").click(addToWatched);
     $(".add-to-my-movies").click(db.addToMyMovies);
 }
+
+// Helper functions for forms stuff. Nothing related to Firebase
+// Build a movie obj from form data.
+// function buildMovieObj() {//this function needs work, but I don't want to mess with it quite yet
+//     let movieObj = {
+//     title: $("#form--title").val(),
+//     artist: $("#form--artist").val(),
+//     album: $("#form--album").val(),
+//     year: $("#form--year").val()
+//   };
+//   return movieObj;
+// }
 
 
 // function createHTML(searchResult) {
@@ -45,3 +59,5 @@ function addSearched(movieData) {
 
 //probably need to use the first part of the below link for grabbing the poster from the api
 //https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
+
+module.exports = {showSearch};

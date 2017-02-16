@@ -23,6 +23,7 @@ var user = require("./user.js");
 // }
 
 function getMovies(searchResult){
+  console.log('searchResult = ', searchResult);
   return new Promise(function(resolve, reject){
     $.ajax({
       // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
@@ -87,27 +88,41 @@ let Handlebars = require('hbsfy/runtime');
 let user = require("./user.js");
 let db = require("./db-interaction.js");
 
-
-function addSearched(movieData) {
-    console.log('addSearched initiated');
-    console.log('movieData.length = ', movieData.length);
-    for (var i = 0; i < movieData.length; i++) {
-        console.log('movieData[i] = ', movieData[i]);
-        $("#suggested-movies").append(
-                                        `<section id="card-${movieData[i]}" class="card-wrapper col-xs-4" >
-                                            <div class="innerCard" style="border: 2px solid black">
-                                                <h3 class="movie-header">${movieData[i].title}</h3>
-                                                <h4 class="movie-year">${movieData[i].year}</h4>
-                                                <img src="${movieData[i].posterURL}" height="200" >
-                                                <h5>${movieData[i].actors}</h5>
-                                                <button type="button" class="add-to-my-movies" value="${movieData[i].title}">I want to see this movie</button>
-                                                <button type="button" class="add-to-my-watched-movies" value="add-to-my-watched-movies">I seen this movie</button>
-                                            </div>
-                                        </section>`);
+// function that adds cards for the movies that match the search term
+function showSearch(movieData) {
+    $("#search-results").html("");
+    console.log('showSearch initiated');
+    // console.log('movieData.length = ', movieData.results.length);
+    var moviesArray = movieData.results;
+    for (var i = 0; i < moviesArray.length; i++) {
+        // console.log('moviesArray[i] = ', moviesArray[i]);
+        $("#search-results").append(
+                                    `<section id="card-${moviesArray[i].id}" class="card-wrapper col-xs-4" >
+                                        <div class="innerCard" style="border: 2px solid black">
+                                            <h3 class="movie-header">${moviesArray[i].title}</h3>
+                                            <h4 class="movie-year">${moviesArray[i].release_date.slice(0, 4)}</h4>
+                                            <img src="https://image.tmdb.org/t/p/w500${moviesArray[i].poster_path}" height="200" >
+                                            <h5>No actors listed</h5>
+                                            <button type="button" class="add-to-my-movies" value="${moviesArray[i].title}">I want to see this movie</button>
+                                            <button type="button" class="add-to-my-watched-movies" value="add-to-my-watched-movies">I seen this movie</button>
+                                        </div>
+                                    </section>`);
     }
     // $(".add-to-my-watched-movies").click(addToWatched);
     $(".add-to-my-movies").click(db.addToMyMovies);
 }
+
+// Helper functions for forms stuff. Nothing related to Firebase
+// Build a movie obj from form data.
+// function buildMovieObj() {//this function needs work, but I don't want to mess with it quite yet
+//     let movieObj = {
+//     title: $("#form--title").val(),
+//     artist: $("#form--artist").val(),
+//     album: $("#form--album").val(),
+//     year: $("#form--year").val()
+//   };
+//   return movieObj;
+// }
 
 
 // function createHTML(searchResult) {
@@ -126,6 +141,7 @@ function addSearched(movieData) {
 //probably need to use the first part of the below link for grabbing the poster from the api
 //https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
 
+module.exports = {showSearch};
 },{"./db-interaction.js":1,"./user.js":6,"hbsfy/runtime":29,"jquery":30}],3:[function(require,module,exports){
 "use strict";
 
@@ -163,7 +179,7 @@ module.exports = firebase;
 
 let $ = require('jquery'),
     db = require("./db-interaction"),
-    templates = require("./dom-movie-builder"),
+    movieBuilder = require("./dom-movie-builder"),
     user = require("./user");
 user.logOut();
 
@@ -174,24 +190,24 @@ $( document ).ready(function() {
 });
 
 // Using the REST API
-function loadMoviesToDOM(searchResult) {
-  // console.log("Where the movies at??");
-  db.getMovies(searchResult)
+function loadMoviesToDOM(input) {
+  console.log("Where the movies at??", input);
+  db.getMovies(input)
   .then((movieData)=>{//movieData comes from the getMovies function, by the resolution of the Promise
     console.log("got data", movieData);
-    var idArray = Object.keys(movieData);//putting all the keys (in this case, movie names) from the movie list on firebase
-    idArray.forEach(function(key){
-      console.log("MovieData[i]: ", movieData[key]);
-      movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
-    });
-    console.log("movie object with id", movieData);
+    // var idArray = Object.keys(movieData);//putting all the keys (in this case, movie names) from the movie list on firebase
+    // idArray.forEach(function(key){
+    //   console.log("MovieData[i]: ", movieData[key]);
+    //   movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
+    // });
+    // console.log("movie object with id", movieData);
     // NEED TO POPULATE DOM HERE
+    movieBuilder.showSearch(movieData);
 
   });
 }
 
-
-
+// listener that askes the user to log in with google when "Sign in" is clicked
 $("#auth-btn").click(function(){
   console.log("clicked auth");
   user.logInGoogle()
@@ -204,6 +220,7 @@ $("#auth-btn").click(function(){
   });
 });
 
+// listener that logs the user out when "logout" is clicked
 $("#logout").click(function(){
   console.log("clicked log out");
   user.logOut();
@@ -212,22 +229,6 @@ $("#logout").click(function(){
   $("#current-list-visible").html("");
   // loadMoviesToDOM();
 });
-
-
-// Helper functions for forms stuff. Nothing related to Firebase
-// Build a movie obj from form data.
-function buildMovieObj() {//this function needs work, but I don't want to mess with it quite yet
-    let movieObj = {
-    title: $("#form--title").val(),
-    artist: $("#form--artist").val(),
-    album: $("#form--album").val(),
-    year: $("#form--year").val()
-  };
-  return movieObj;
-}
-
-
-
 
 // Listener for the search box
 $("#searchbar").keypress(function(e) {
@@ -244,6 +245,7 @@ function showSearch(e) {
 		$(".hidden-div").hide();
 		$("#search-results").show();
 		$("#current-list-visible").html("My Movie Search");
+    loadMoviesToDOM(input);
 	}
 }
 

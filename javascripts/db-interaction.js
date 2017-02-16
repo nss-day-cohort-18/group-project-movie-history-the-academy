@@ -22,6 +22,7 @@ var user = require("./user.js");
 // }
 
 function getMovies(searchResult){
+  console.log('searchResult = ', searchResult);
   return new Promise(function(resolve, reject){
     $.ajax({
       // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
