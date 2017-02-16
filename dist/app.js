@@ -1,9 +1,34 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+
+let $ = require('jquery');
+let config = require("./firebaseConfig.js");
+
+
+function searchFor(searchResult) {
+
+	console.log("searchResult", searchResult);
+	return new Promise(function(resolve,reject){
+		$.ajax({
+	    	url:`https://api.themoviedb.org/3/search/movie?api_key=e891491a45e46c6e7b42d5373e731739&query=${searchResult}`
+		}).done(function(movieData){
+			console.log("[API] MovieData: ", movieData);
+    		resolve(movieData);
+  		}).fail( function(error){
+  			console.log("API ERRPR");
+  			reject(error);
+  		});
+	});
+}
+
+module.exports = {searchFor};
+},{"./firebaseConfig.js":5,"jquery":31}],2:[function(require,module,exports){
 'use strict';
 
 
 let $ = require('jquery'); // Might not be necesary
 var firebase = require("./firebaseConfig");
+var user = require("./user.js");
 
 // Gets all movies with specified UID
 // function getMovies(user){
@@ -21,13 +46,15 @@ var firebase = require("./firebaseConfig");
 //  });
 // }
 
-function getMovies(){
+function getMovies(searchResult){
+  console.log('searchResult = ', searchResult);
   return new Promise(function(resolve, reject){
     $.ajax({
       // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
-      url: `https://movie-history-6e707.firebaseio.com/movies.json`,
+      url: `https://api.themoviedb.org/3/search/movie?api_key=56696d263700546dd8f63b84a5e3d534&query=${searchResult}`,
       type: "GET"
     }).done( function(movieData){
+      // var movies = Object.values("movieData");
       resolve(movieData);
     }).fail( function(error){
       console.log("ERROR");
@@ -37,26 +64,36 @@ function getMovies(){
 }
 
 
-// Adds a movie (with a UID)
-function addMovie(movieObject){
-  console.log("Adding Song: ", movieObject);
-
-  return new Promise(function(resolve, reject){
-    $.ajax({
-      url: `https://movie-history-6e707.firebaseio.com`,
-      type: "POST",
-      data: JSON.stringify(movieObject),
-      dataType: "json"
-    }).done( function(movieID){
-      resolve(movieID);
+// function that adds movie to the database
+function addToMyMovies() {
+    console.log('you clicked I want to see this movie');
+    var currentCard = $(event.currentTarget);
+    console.log('url:', currentCard.siblings("img").attr("src"));
+    var currentUser = user.getUser();
+    var myMovie = {
+        "title": currentCard.siblings("h3").html(),
+        "year": currentCard.siblings("h4").html(),
+        "actors": currentCard.siblings("h5").html(),
+        "userID": currentUser,
+        "rating": "",
+        "posterURL": currentCard.siblings("img").attr("src")
+    };
+    return new Promise (function(resolve, reject) {
+        $.ajax({
+            url: "https://movie-history-6e707.firebaseio.com/movies.json",
+            type: "POST",
+            data: JSON.stringify(myMovie),
+            dataType: "json"
+        }).done(function(movie) {
+            resolve(movie);
+        });
     });
-  });
 }
 
 // Deletes a movie using the movie's UID
 function deleteMovie(movieID){
   return new Promise( function(resolve, reject){
-    $.ajax({ 
+    $.ajax({
       url: `https://movie-history-6e707.firebaseio.com/movies/${movieID}.json`,
       method: "DELETE"
     }).done( function(){
@@ -65,15 +102,93 @@ function deleteMovie(movieID){
   });
 }
 
-module.exports = {getMovies, addMovie, deleteMovie};
-},{"./firebaseConfig":4,"jquery":30}],2:[function(require,module,exports){
+function searchFirebase(searchString){
+    return new Promise(function(resolve, reject){
+        var foundMovies = [];
+        var tempMovie;
+        $.ajax({
+            // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
+            url: `https://movie-history-6e707.firebaseio.com/movies.json`,
+            type: "GET"
+        }).done( function(movieData){
+            for(var i = 0; i < movieData.length; i++){
+              tempMovie = movieData[i].title.toLowerCase();
+                if(tempMovie.includes(searchString)){
+                    foundMovies.push(movieData[i]);
+                }
+            }
+            resolve(foundMovies);
+        }).fail( function(error){
+            console.log("ERROR");
+            reject(error);
+        });
+    });
+}
+
+function getAllMovies(){
+  return new Promise(function(resolve, reject){
+    $.ajax({
+      // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
+      url: `https://movie-history-6e707.firebaseio.com/movies.json`,
+      type: "GET"
+    }).done( function(movieData){
+        var movies = Object.values(movieData);
+        resolve(movies);
+    }).fail( function(error){
+      console.log("ERROR");
+      reject(error);
+    });
+  });
+}
+
+module.exports = {getMovies, addToMyMovies, deleteMovie, searchFirebase, getAllMovies};
+
+
+},{"./firebaseConfig":5,"./user.js":7,"jquery":31}],3:[function(require,module,exports){
 "use strict";
 
 //this file will build the movie cards and push them to the dom
 
 let $ = require('jquery');
 let Handlebars = require('hbsfy/runtime');
+let user = require("./user.js");
+let db = require("./db-interaction.js");
 
+// function that adds cards for the movies that match the search term
+function showSearch(movieData) {
+    $("#search-results").html("");
+    console.log('showSearch initiated');
+    // console.log('movieData.length = ', movieData.results.length);
+    var moviesArray = movieData.results;
+    for (var i = 0; i < moviesArray.length; i++) {
+        // console.log('moviesArray[i] = ', moviesArray[i]);
+        $("#search-results").append(
+                                    `<section id="card-${moviesArray[i].id}" class="card-wrapper col-xs-4" >
+                                        <div class="innerCard" style="border: 2px solid black">
+                                            <h3 class="movie-header">${moviesArray[i].title}</h3>
+                                            <h4 class="movie-year">${moviesArray[i].release_date.slice(0, 4)}</h4>
+                                            <img src="https://image.tmdb.org/t/p/w500${moviesArray[i].poster_path}" height="200" >
+                                            <h5>No actors listed</h5>
+                                            <button type="button" class="add-to-my-movies" value="${moviesArray[i].title}">I want to see this movie</button>
+                                            <button type="button" class="add-to-my-watched-movies" value="add-to-my-watched-movies">I seen this movie</button>
+                                        </div>
+                                    </section>`);
+    }
+    // $(".add-to-my-watched-movies").click(addToWatched);
+    $(".add-to-my-movies").click(db.addToMyMovies);
+}
+
+// Helper functions for forms stuff. Nothing related to Firebase
+// Build a movie obj from form data.
+// function buildMovieObj() {//this function needs work, but I don't want to mess with it quite yet
+//     let movieObj = {
+//     title: $("#form--title").val(),
+//     artist: $("#form--artist").val(),
+//     album: $("#form--album").val(),
+//     year: $("#form--year").val()
+//   };
+//   return movieObj;
+// }
 
 
 // function createHTML(searchResult) {
@@ -92,7 +207,8 @@ let Handlebars = require('hbsfy/runtime');
 //probably need to use the first part of the below link for grabbing the poster from the api
 //https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
 
-},{"hbsfy/runtime":29,"jquery":30}],3:[function(require,module,exports){
+module.exports = {showSearch};
+},{"./db-interaction.js":2,"./user.js":7,"hbsfy/runtime":30,"jquery":31}],4:[function(require,module,exports){
 "use strict";
 
 function getKey() {
@@ -104,8 +220,7 @@ function getKey() {
 }
 
 module.exports = getKey;
-
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 let firebase = require("firebase/app"),
     fb = require("./fb-getter"),
@@ -125,13 +240,16 @@ var config = {
 firebase.initializeApp(config);
 module.exports = firebase;
 
-},{"./fb-getter":3,"firebase/app":7,"firebase/auth":8,"firebase/database":9}],5:[function(require,module,exports){
+},{"./fb-getter":4,"firebase/app":8,"firebase/auth":9,"firebase/database":10}],6:[function(require,module,exports){
 "use strict";
 
 let $ = require('jquery'),
     db = require("./db-interaction"),
-    templates = require("./dom-movie-builder"),
-    user = require("./user");
+
+    movieBuilder = require("./dom-movie-builder"),
+    user = require("./user"),
+    api = require("./api-interaction.js");
+
 user.logOut();
 
 $( document ).ready(function() {
@@ -139,26 +257,26 @@ $( document ).ready(function() {
   $(".select-button").hide();
   $(".hidden-div").hide();
 });
+
 // Using the REST API
-function loadMoviesToDOM(searchResult) {
-  console.log("Where the movies at??");
-  db.getMovies(searchResult)
+function loadMoviesToDOM(input) {
+  console.log("Where the movies at??", input);
+  db.getMovies(input)
   .then((movieData)=>{//movieData comes from the getMovies function, by the resolution of the Promise
     console.log("got data", movieData);
-    var idArray = Object.keys(movieData);//putting all the keys (in this case, movie names) from the movie list on firebase
-    idArray.forEach(function(key){
-      console.log("MovieData[i]: ", movieData[key]);
-      movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
-    });
-    console.log("movie object with id", movieData);
-
+    // var idArray = Object.keys(movieData);//putting all the keys (in this case, movie names) from the movie list on firebase
+    // idArray.forEach(function(key){
+    //   console.log("MovieData[i]: ", movieData[key]);
+    //   movieData[key].id = key;//this function is getting all of movie ids that are tied to the movie names, preparing the info to be sent into the function that will make the movie list
+    // });
+    // console.log("movie object with id", movieData);
     // NEED TO POPULATE DOM HERE
+    movieBuilder.showSearch(movieData);
 
   });
 }
 
-
-
+// listener that askes the user to log in with google when "Sign in" is clicked
 $("#auth-btn").click(function(){
   console.log("clicked auth");
   user.logInGoogle()
@@ -171,6 +289,7 @@ $("#auth-btn").click(function(){
   });
 });
 
+// listener that logs the user out when "logout" is clicked
 $("#logout").click(function(){
   console.log("clicked log out");
   user.logOut();
@@ -179,22 +298,6 @@ $("#logout").click(function(){
   $("#current-list-visible").html("");
   // loadMoviesToDOM();
 });
-
-
-// Helper functions for forms stuff. Nothing related to Firebase
-// Build a movie obj from form data.
-function buildMovieObj() {//this function needs work, but I don't want to mess with it quite yet
-    let movieObj = {
-    title: $("#form--title").val(),
-    artist: $("#form--artist").val(),
-    album: $("#form--album").val(),
-    year: $("#form--year").val()
-  };
-  return movieObj;
-}
-
-
-
 
 // Listener for the search box
 $("#searchbar").keypress(function(e) {
@@ -206,12 +309,35 @@ $("#searchbar").keypress(function(e) {
 function showSearch(e) {
 	if (e.keyCode == '13') {
 		let input = $("#searchbar").val();
+
+        // Hide or show divs
 		$("#searchbar").val("");
-		console.log("Input: ", input);
 		$(".hidden-div").hide();
 		$("#search-results").show();
 		$("#current-list-visible").html("My Movie Search");
-	}
+        // Declare variables to receive search results
+        var firebaseMovies = [];
+        var searchedMovies = [];
+
+        // Look for instances of the searched string in the database
+        db.searchFirebase(input)
+        .then( function(firebaseResults){
+            firebaseMovies = firebaseResults;
+        });
+
+        // Search for instances of the string using the API
+        api.searchFor(input)
+        .then( function(apiResult){
+            searchedMovies = apiResult.results;
+        })
+        // Then find duplicates among the two arrays of movies
+        .then( function(){
+            console.log("[API] Searched: ", searchedMovies);
+            console.log("[FIRE] Found: ", firebaseMovies);
+            findDuplicates(searchedMovies, firebaseMovies);
+        });
+    loadMoviesToDOM(input);
+  }
 }
 
 // Listeners on buttons to add backgrounds to active button and hides other associated
@@ -236,7 +362,34 @@ $(".select-button").click(function(event) {
 	}
 });
 
-},{"./db-interaction":1,"./dom-movie-builder":2,"./user":6,"jquery":30}],6:[function(require,module,exports){
+
+
+// Finds duplicates among movies searched in (1) The Api and (2) Firebase
+function findDuplicates(searchedMovies, firebaseMoviesFound){
+    var i, j;
+
+
+    var combinedMoviesToShow = searchedMovies;
+
+
+    for(i = 0; i < searchedMovies.length; i++){
+        for(j = 0; j < firebaseMoviesFound.length; j++){
+            if(searchedMovies[i].id === firebaseMoviesFound[j].id){
+                // Id the DB movie(s) are already in the search results:
+                console.log("DUPLICATE!!: ", searchedMovies[i].title);
+                // Do nothing
+            }else{
+                // If the DB movies are NOT included in the search results:
+                // DO NOTHING
+            }
+        }
+    }
+    console.log("FINAL MOVIES THAT WILL POPULATE THE DOM (upon hitting enter):\n", combinedMoviesToShow);
+}
+
+
+
+},{"./api-interaction.js":1,"./db-interaction":2,"./dom-movie-builder":3,"./user":7,"jquery":31}],7:[function(require,module,exports){
 "use strict";
 
 let firebase = require("./firebaseConfig"),
@@ -273,7 +426,7 @@ function setUser(val){
 //sending function from page
 module.exports = {logInGoogle, logOut, getUser, setUser};
 
-},{"./firebaseConfig":4}],7:[function(require,module,exports){
+},{"./firebaseConfig":5}],8:[function(require,module,exports){
 (function (global){
 var firebase = (function(){
 /*! @license Firebase v3.6.9
@@ -309,7 +462,7 @@ return firebase;}).call(typeof global !== undefined ? global : typeof self !== u
 module.exports = firebase;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (global){
 var firebase = require('./app');
 (function(){
@@ -554,7 +707,7 @@ a,function(a,c){if("create"===a)try{c.auth()}catch(d){}});firebase.INTERNAL.exte
 module.exports = firebase.auth;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./app":7}],9:[function(require,module,exports){
+},{"./app":8}],10:[function(require,module,exports){
 (function (global){
 var firebase = require('./app');
 (function(){
@@ -822,7 +975,7 @@ d;return d.Ya},{Reference:U,Query:X,Database:Se,enableLogging:xc,INTERNAL:Y,TEST
 module.exports = firebase.database;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./app":7}],10:[function(require,module,exports){
+},{"./app":8}],11:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -890,7 +1043,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":11,"./handlebars/exception":14,"./handlebars/no-conflict":24,"./handlebars/runtime":25,"./handlebars/safe-string":26,"./handlebars/utils":27}],11:[function(require,module,exports){
+},{"./handlebars/base":12,"./handlebars/exception":15,"./handlebars/no-conflict":25,"./handlebars/runtime":26,"./handlebars/safe-string":27,"./handlebars/utils":28}],12:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -996,7 +1149,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":12,"./exception":14,"./helpers":15,"./logger":23,"./utils":27}],12:[function(require,module,exports){
+},{"./decorators":13,"./exception":15,"./helpers":16,"./logger":24,"./utils":28}],13:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1014,7 +1167,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":13}],13:[function(require,module,exports){
+},{"./decorators/inline":14}],14:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1045,7 +1198,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":27}],14:[function(require,module,exports){
+},{"../utils":28}],15:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1098,7 +1251,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1146,7 +1299,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":16,"./helpers/each":17,"./helpers/helper-missing":18,"./helpers/if":19,"./helpers/log":20,"./helpers/lookup":21,"./helpers/with":22}],16:[function(require,module,exports){
+},{"./helpers/block-helper-missing":17,"./helpers/each":18,"./helpers/helper-missing":19,"./helpers/if":20,"./helpers/log":21,"./helpers/lookup":22,"./helpers/with":23}],17:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1187,7 +1340,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":27}],17:[function(require,module,exports){
+},{"../utils":28}],18:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1283,7 +1436,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":14,"../utils":27}],18:[function(require,module,exports){
+},{"../exception":15,"../utils":28}],19:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1310,7 +1463,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":14}],19:[function(require,module,exports){
+},{"../exception":15}],20:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1341,7 +1494,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":27}],20:[function(require,module,exports){
+},{"../utils":28}],21:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1369,7 +1522,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1383,7 +1536,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1418,7 +1571,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":27}],23:[function(require,module,exports){
+},{"../utils":28}],24:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1467,7 +1620,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":27}],24:[function(require,module,exports){
+},{"./utils":28}],25:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -1491,7 +1644,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1790,7 +1943,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":11,"./exception":14,"./utils":27}],26:[function(require,module,exports){
+},{"./base":12,"./exception":15,"./utils":28}],27:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -1807,7 +1960,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1933,15 +2086,15 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":10}],29:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":11}],30:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":28}],30:[function(require,module,exports){
+},{"handlebars/runtime":29}],31:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v3.1.1
  * https://jquery.com/
@@ -12163,4 +12316,4 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}]},{},[5]);
+},{}]},{},[6]);
