@@ -145,3 +145,21 @@ function findDuplicates(searchedMovies, firebaseMoviesFound){
 }
 
 
+// Slider 
+$(document).on("input", "#slider", function(event){
+    var newNum = parseInt(event.target.value);
+
+    db.getAllMovies()
+    .then( function(movies){
+
+        var filteredMovies = [];
+        for(var i = 0; i < movies.length; i++){
+            if(parseInt(movies[i].rating) >= newNum){
+                filteredMovies.push(movies[i]);
+            }
+        }
+        console.log("FILTERED: ", filteredMovies);
+    });
+});
+
+
