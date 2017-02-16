@@ -68,13 +68,15 @@ function deleteMovie(movieID){
 function searchFirebase(searchString){
     return new Promise(function(resolve, reject){
         var foundMovies = [];
+        var tempMovie;
         $.ajax({
             // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
             url: `https://movie-history-6e707.firebaseio.com/movies.json`,
             type: "GET"
         }).done( function(movieData){
             for(var i = 0; i < movieData.length; i++){
-                if(movieData[i].title.includes(searchString)){
+              tempMovie = movieData[i].title.toLowerCase();
+                if(tempMovie.includes(searchString)){
                     foundMovies.push(movieData[i]);
                 }
             }
