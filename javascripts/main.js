@@ -106,8 +106,8 @@ function showSearch(e) {
         })
         // Then find duplicates among the two arrays of movies
         .then( function(){
-            console.log("Searched: ", searchedMovies);
-            console.log("Found: ", firebaseMovies);
+            console.log("[API] Searched: ", searchedMovies);
+            console.log("[FIRE] Found: ", firebaseMovies);
             findDuplicates(searchedMovies, firebaseMovies);
         });
     }
@@ -141,9 +141,6 @@ $(".select-button").click(function(event) {
 function findDuplicates(searchedMovies, firebaseMoviesFound){
     var i, j;
 
-
-    console.log("[FIND] Searched: ", searchedMovies);
-    console.log("[FIND] DB: ", firebaseMoviesFound);
 
     var combinedMoviesToShow = searchedMovies;
 
