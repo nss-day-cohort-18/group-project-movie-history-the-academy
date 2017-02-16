@@ -29,8 +29,8 @@ function getMovies(searchResult){
       url: `https://api.themoviedb.org/3/search/movie?api_key=56696d263700546dd8f63b84a5e3d534&query=${searchResult}`,
       type: "GET"
     }).done( function(movieData){
-      var movies = Object.values("movieData");
-      resolve(movies);
+      // var movies = Object.values("movieData");
+      resolve(movieData);
     }).fail( function(error){
       console.log("ERROR");
       reject(error);
@@ -100,5 +100,21 @@ function searchFirebase(searchString){
     });
 }
 
-module.exports = {getMovies, addToMyMovies, deleteMovie, searchFirebase};
+function getAllMovies(){
+  return new Promise(function(resolve, reject){
+    $.ajax({
+      // url: `https://movie-history-6e707.firebaseio.com?orderBy="uid"&equalTo="${user}"`
+      url: `https://movie-history-6e707.firebaseio.com/movies.json`,
+      type: "GET"
+    }).done( function(movieData){
+        var movies = Object.values(movieData);
+        resolve(movies);
+    }).fail( function(error){
+      console.log("ERROR");
+      reject(error);
+    });
+  });
+}
+
+module.exports = {getMovies, addToMyMovies, deleteMovie, searchFirebase, getAllMovies};
 
